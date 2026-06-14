@@ -5,11 +5,17 @@ name = "Home"
 url = "/"
 weight = 1
 
+[main.params]
+icon = "home"
+
 [[main]]
 identifier = "about"
 name = "About"
 url = "/about/"
 weight = 2
+
+[main.params]
+icon = "user"
 
 [[main]]
 identifier = "archives"
@@ -17,13 +23,17 @@ name = "Archives"
 url = "/archives/"
 weight = 3
 
+[main.params]
+icon = "archives"
+
 [[main]]
 identifier = "search"
 name = "Search"
 url = "/search/"
 weight = 4
 
-
+[main.params]
+icon = "search"
 
 # Social links
 [[social]]

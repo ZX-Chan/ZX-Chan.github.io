@@ -15,7 +15,7 @@ contacts:
     icon: "brand-github"
 
 bio:
-  - "I am an M.S. student at School of Computer Science and Technology, Xidian University (西安电子科技大学), supervised by <a href='https://archives.xidian.edu.cn/info/1008/2907.htm' target='_blank' rel='noopener'>Prof. Yang Mengfei (杨孟飞)</a> and <a href='https://faculty.xidian.edu.cn/MAZHI/zh_CN/index.htm' target='_blank' rel='noopener'>Prof. Ma Zhi (马智)</a>. Before joining the master program, I was an undergraduate student in Xidian University from 2022 to 2026."
+  - "I am an M.S. student at School of Computer Science and Technology, Xidian University (西安电子科技大学), supervised by <a href='https://archives.xidian.edu.cn/info/1008/2907.htm' target='_blank' rel='noopener' style='text-decoration:underline;'>Prof. Yang Mengfei (杨孟飞)</a> and <a href='https://faculty.xidian.edu.cn/MAZHI/zh_CN/index.htm' target='_blank' rel='noopener' style='text-decoration:underline;'>Prof. Ma Zhi (马智)</a>. Before joining the master program, I was an undergraduate student in Xidian University from 2022 to 2026."
 
 education:
   - period: "2026 - Present"
@@ -33,7 +33,7 @@ news:
 publications:
   - venue: "ICMR 2026"
     title: "VideoAgent: Personalized Synthesis of Scientific Videos"
-    authors: "Xiao Liang, Bangxin Li, <span style='font-weight: 700; color: var(--accent-color);'>Zixuan Chen</span>, Hanyue Zheng, Zhi Ma, Di Wang, Cong Tian, Quan Wang"
+    authors: "Xiao Liang<sup>†</sup>, Bangxin Li<sup>†</sup>, <span style='font-weight: 700; color: var(--accent-color); font-size: 1.1em;'>Zixuan Chen</span>, Hanyue Zheng, Zhi Ma, Di Wang, Cong Tian, Quan Wang"
     image: "https://github.com/user-attachments/assets/356aa64f-c557-452b-9459-e77b4fafeed7"
     links:
       - label: "Paper"
