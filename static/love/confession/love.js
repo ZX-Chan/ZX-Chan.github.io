@@ -57,12 +57,13 @@ noButton.addEventListener("click", function () {
 
 // Yes 按钮点击后，进入表白成功页面
 yesButton.addEventListener("click", function () {
-    document.body.innerHTML = `
-        <div class="yes-screen">
-            <h1 class="yes-text">!!!喜欢你!! ( >᎑<)♡︎ᐝ<br>小欣宝宝suki!!</h1>
-            <img src="./images/hug.png" alt="拥抱" class="yes-image">   
-        </div>
+    document.querySelector('.container').style.display = 'none';
+    let yesDiv = document.createElement('div');
+    yesDiv.className = 'yes-screen';
+    yesDiv.innerHTML = `
+        <h1 class="yes-text">!!!喜欢你!! ( >᎑<)♡︎ᐝ<br>小欣宝宝suki!!</h1>
+        <img src="./images/hug.png" alt="拥抱" class="yes-image">
     `;
-
+    document.body.appendChild(yesDiv);
     document.body.style.overflow = "hidden";
 });

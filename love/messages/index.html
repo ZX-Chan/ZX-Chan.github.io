@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💕 满屏情话</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            overflow: hidden;
+            background: #fff5f7;
+            height: 100vh;
+            font-family: 'Microsoft YaHei UI', 'Segoe UI', sans-serif;
+            cursor: pointer;
+            user-select: none;
+        }
+        .msg {
+            position: fixed;
+            padding: 10px 22px;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            opacity: 0;
+            pointer-events: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            white-space: nowrap;
+            z-index: 10;
+            transform: scale(0.3) translateY(30px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .msg.show {
+            opacity: 0.9;
+            transform: scale(1) translateY(0);
+        }
+        .hint {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #d4818e;
+            font-size: 1rem;
+            opacity: 0.6;
+            z-index: 100;
+            text-align: center;
+        }
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            display: none;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(8px);
+            padding: 10px 20px;
+            border-radius: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        .controls label {
+            font-size: 0.85rem;
+            color: #68495b;
+            font-weight: 600;
+        }
+        .controls input[type="range"] {
+            width: 120px;
+            accent-color: #d4818e;
+            cursor: pointer;
+        }
+        .controls .speed-label {
+            font-size: 0.85rem;
+            color: #d4818e;
+            min-width: 45px;
+            font-weight: 600;
+        }
+        .close-hint {
+            position: fixed;
+            top: 60px;
+            right: 30px;
+            color: #ccc;
+            font-size: 0.9rem;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <a href="../" style="position: fixed; top: 20px; left: 20px; z-index: 999;
+          background: rgba(255,255,255,0.8); border: none; border-radius: 12px;
+          padding: 8px 16px; font-size: 1rem; cursor: pointer; text-decoration: none;
+          color: #68495b; backdrop-filter: blur(4px); box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+        ← 返回
+    </a>
+    <div class="close-hint">按 ESC 退出</div>
+    <div class="hint">💕 点击屏幕开始</div>
+    <div class="controls">
+        <label>频率</label>
+        <input type="range" id="freqSlider" min="50" max="800" value="200">
+        <span class="speed-label" id="speedLabel">中</span>
+    </div>
+
+    <script>
+        const messages = [
+            "我想你了 💭", "今天过得开心嘛 🌸", "期待和你见面 🥰",
+            "顺顺利利 ✨", "早点休息 🌙", "天冷了，多穿衣服 🧣",
+            "今天有想我嘛 💗", "我爱你 ❤️", "宝贝 💕", "你要想我 😘",
+            "我好想你 🥺", "我真的好想你 😭", "宝宝我爱你 💖",
+            "小欣宝宝 🐣", "小欣宝贝 🌷", "好爱你w 💝",
+            "亲亲宝贝 😽", "要抱抱~ 🤗", "比心❤️",
+            "啾咪~ 💋", "喜欢喜欢喜欢 💫"
+        ];
+
+        const colors = [
+            "#FFB6C1", "#FFC8DC", "#FFDAB9", "#FFE4E1",
+            "#FF6F91", "#FFF0F5", "#FFBE96", "#FF9671",
+            "#FFC75F", "#FFF5C8", "#FFFAE6", "#F9F871",
+            "#98FB98", "#90EE90", "#ADFF2F", "#B9FAC8",
+            "#BDFCC8", "#FFF", "#ADD8E6", "#B0E0E6",
+            "#87CEFA", "#B0EEEE", "#B4D2FF", "#D2E1F0",
+            "#E0FFFF", "#A078DF", "#BE93FD", "#D65DB1",
+            "#DCC0FF", "#EE82EE", "#DDA0DD", "#FACCFF",
+            "#FFE6FF", "#DCC8FF"
+        ];
+
+        const speedNames = { 50: "极快", 100: "很快", 200: "中", 400: "慢", 600: "很慢", 800: "极慢" };
+
+        let active = false;
+        let running = true;
+        let msgCount = 0;
+        let intervalId = null;
+        const MAX_MSGS = 200;
+
+        const slider = document.getElementById('freqSlider');
+        const speedLabel = document.getElementById('speedLabel');
+
+        function random(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+        function getInterval() { return parseInt(slider.value); }
+
+        function updateSpeedLabel() {
+            const v = getInterval();
+            let name = "中";
+            for (const [val, label] of Object.entries(speedNames)) {
+                if (v <= parseInt(val)) { name = label; break; }
+            }
+            speedLabel.textContent = name;
+        }
+
+        slider.addEventListener('input', function() {
+            updateSpeedLabel();
+            if (active) {
+                clearInterval(intervalId);
+                intervalId = setInterval(createMessage, getInterval());
+            }
+        });
+
+        function createMessage() {
+            if (!running || msgCount >= MAX_MSGS) return;
+            
+            const el = document.createElement('div');
+            el.className = 'msg';
+            el.textContent = random(messages);
+            el.style.background = random(colors);
+            
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+            const x = Math.random() * (w - 200);
+            const y = Math.random() * (h - 60);
+            
+            el.style.left = x + 'px';
+            el.style.top = y + 'px';
+            
+            document.body.appendChild(el);
+            msgCount++;
+            
+            requestAnimationFrame(() => { el.classList.add('show'); });
+            
+            const stay = 2000 + Math.random() * 2000;
+            setTimeout(() => {
+                el.classList.remove('show');
+                el.style.opacity = '0';
+                el.style.transform = 'scale(0.3) translateY(30px)';
+                setTimeout(() => {
+                    if (el.parentNode) el.remove();
+                    msgCount--;
+                }, 500);
+            }, stay);
+        }
+
+        function startRain() {
+            if (active) return;
+            active = true;
+            document.querySelector('.hint').style.display = 'none';
+            document.querySelector('.controls').style.display = 'flex';
+            
+            for (let i = 0; i < 20; i++) setTimeout(createMessage, i * 100);
+            intervalId = setInterval(createMessage, getInterval());
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                running = false;
+                clearInterval(intervalId);
+                document.querySelectorAll('.msg').forEach(el => {
+                    el.classList.remove('show');
+                    el.style.opacity = '0';
+                    setTimeout(() => el.remove(), 500);
+                });
+                document.querySelector('.hint').textContent = '已退出 💕 点击重新开始';
+                document.querySelector('.hint').style.display = 'block';
+                active = false;
+                setTimeout(() => { running = true; }, 500);
+            }
+        });
+
+        document.addEventListener('click', startRain);
+        updateSpeedLabel();
+    </script>
+</body>
+</html>
