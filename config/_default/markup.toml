@@ -1,0 +1,17 @@
+[goldmark]
+  [goldmark.renderer]
+    hardWraps = false
+    unsafe = true
+  [goldmark.extensions]
+    typographer = false
+
+[highlight]
+  codeFences = true
+  guessSyntax = true
+  hl_Lines = ""
+  lineNoStart = 1
+  lineNos = true
+  lineNumbersInTable = true
+  noClasses = true
+  style = "monokai"
+  tabWidth = 4

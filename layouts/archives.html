@@ -1,0 +1,72 @@
+{{ define "main" }}
+{{- $pages := where .Site.RegularPages "Type" "in" .Site.Params.mainSections -}}
+{{- $pages = $pages.GroupByPublishDate "2006" -}}
+
+{{- $catColors := dict
+    "Machine Learning" "#d4818e"
+    "Computer Networks" "#6784b1"
+    "AI Introduction" "#6fb3a0"
+    "Mathematical Logic" "#c7955e"
+    "Notes" "#a08fc9"
+-}}
+
+<header class="page-header">
+    <h1>{{ .Title }}</h1>
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+        ≡
+    </button>
+</header>
+
+<div class="archives">
+    {{ range $pages }}
+    <div class="archive-year" style="margin-bottom: 2.5rem;">
+        <h2 class="archive-year-header" style="font-size: 2.2rem; margin-bottom: 1.2rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--accent-color);">
+            {{ .Key }}
+        </h2>
+
+        {{ range .Pages }}
+        {{- $cat := index .Params.categories 0 | default "" -}}
+        {{- $color := index $catColors $cat | default "var(--accent-color)" -}}
+        <div class="archive-entry" style="padding: 1.2rem 1.5rem; margin-bottom: 1rem; 
+                    background: var(--card-background); border-radius: var(--card-border-radius);
+                    box-shadow: var(--shadow-l1); border-left: 4px solid {{ $color }};">
+            <h3 class="archive-entry-title" style="font-size: 2rem; margin: 0 0 0.4rem 0;">
+                <a href="{{ .RelPermalink }}" style="color: var(--body-text-color); text-decoration: none;">
+                    {{ .Title }}
+                </a>
+            </h3>
+            <div class="archive-entry-meta" style="display: flex; align-items: center; gap: 1rem; font-size: 1.4rem;">
+                <time datetime="{{ .PublishDate.Format "2006-01-02" }}" style="opacity: 0.6;">{{ .PublishDate.Format "2006-01-02" }}</time>
+                {{ if $cat }}
+                <span style="display: inline-block; background: {{ $color }}; color: #fff; 
+                             padding: 0.3rem 1rem; border-radius: 4px; font-size: 1.2rem; font-weight: bold;">
+                    {{ $cat }}
+                </span>
+                {{ end }}
+            </div>
+        </div>
+        {{ end }}
+    </div>
+    {{ end }}
+</div>
+
+{{- partial "footer/footer" . -}}
+
+<script>
+(function() {
+    var btn = document.getElementById('sidebarToggle');
+    if (!btn) return;
+    btn.addEventListener('click', function() {
+        var sidebar = document.querySelector('.right-sidebar');
+        if (sidebar) {
+            sidebar.classList.toggle('sidebar-visible');
+        }
+    });
+})();
+</script>
+
+{{ end }}
+
+{{ define "right-sidebar" }}
+{{ partial "sidebar/right.html" (dict "Context" . "Scope" "page") }}
+{{ end }}

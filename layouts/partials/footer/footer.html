@@ -1,0 +1,5 @@
+<footer id="footer" class="footer">
+    {{ with .Site.Params.footer.customText }}
+    <div class="footer-text">{{ . | safeHTML }}</div>
+    {{ end }}
+</footer>

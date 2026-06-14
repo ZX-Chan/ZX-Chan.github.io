@@ -1,0 +1,57 @@
+# 主页下方显示文章列表
+mainSections = ["post"]
+
+# RSS 输出全文
+rssFullContent = true
+
+# 排序方式
+SortBy = "default"
+
+# 页脚
+[footer]
+since = 2025
+customText = ""
+
+# 日期格式
+[dateFormat]
+published = "2006-01-02"
+lastUpdated = "2006-01-02"
+
+# 侧边栏
+[sidebar]
+subtitle = "Xidian University<br>Undergraduate student, Xidian University"
+avatar = "img/avatar.png"
+
+# 文章设置
+[article]
+headingAnchor = false
+math = true
+readingTime = true
+
+[article.license]
+enabled = true
+default = "Licensed under CC BY-NC-SA 4.0"
+
+# 侧边栏组件
+[widgets]
+homepage = [
+    { type = "search" },
+    { type = "archives", params = { limit = 5 } },
+    { type = "categories", params = { limit = 10 } },
+    { type = "tag-cloud", params = { limit = 10 } },
+]
+page = [
+    { type = "toc" },
+    { type = "archives", params = { limit = 5 } },
+    { type = "categories", params = { limit = 10 } },
+    { type = "tag-cloud", params = { limit = 10 } },
+]
+
+# 配色方案
+[colorScheme]
+toggle = true
+default = "auto"
+
+# 评论（暂不使用）
+[comments]
+enabled = false

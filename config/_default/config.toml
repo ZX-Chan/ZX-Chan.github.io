@@ -1,0 +1,19 @@
+# 站点基础配置
+baseurl = "https://ZX-Chan.github.io/"
+locale = "zh-cn"
+title = "Zixuan Chen (陈子轩)"
+
+# 默认语言
+defaultContentLanguage = "zh-cn"
+hasCJKLanguage = true
+
+# 版权信息（设为空字符串可隐藏）
+copyright = ""
+
+# 分页
+[pagination]
+pagerSize = 7
+
+# 搜索用 JSON 输出
+[outputs]
+home = ["HTML", "RSS", "JSON"]

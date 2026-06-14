@@ -1,0 +1,22 @@
+# Hugo
+/public/
+/resources/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Dependencies
+/node_modules/
+
+# Environment
+.hugo_build.lock
+
+# Agent workspace
+.reasonix/

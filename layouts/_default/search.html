@@ -1,0 +1,101 @@
+{{ define "main" }}
+<header class="page-header">
+    <h1>{{ .Title }}</h1>
+    <button class="sidebar-toggle" id="searchSidebarToggle" aria-label="Toggle sidebar"
+            style="background: none; border: 1px solid rgba(128,128,128,0.2); border-radius: 6px; 
+                   cursor: pointer; font-size: 1.5rem; line-height: 1; padding: 0.3rem 0.6rem;
+                   color: var(--body-text-color);">
+        ≡
+    </button>
+</header>
+
+<div class="search-form-container">
+    <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem;">
+        <input type="text" id="searchInput" placeholder="Search posts..." 
+               style="flex: 1; padding: 1.2rem 1.4rem; font-size: 1.6rem; 
+                      border: 1px solid rgba(128,128,128,0.2); border-radius: 8px;
+                      background: var(--card-background); color: var(--body-text-color);">
+    </div>
+    <div id="searchResults" style="font-size: 1.1rem;"></div>
+</div>
+
+<script>
+(function() {
+    var searchData = [];
+    var input = document.getElementById('searchInput');
+    var results = document.getElementById('searchResults');
+
+    // Load search index
+    fetch('/index.json')
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            searchData = data;
+            // Read keyword from URL params
+            var params = new URLSearchParams(window.location.search);
+            var keyword = params.get('keyword');
+            if (keyword) {
+                input.value = keyword;
+                doSearch(keyword);
+            }
+        })
+        .catch(function() {
+            results.innerHTML = '<p style="color: var(--accent-color);">Failed to load search index.</p>';
+        });
+
+    function doSearch(query) {
+        if (!query || query.length < 1 || searchData.length === 0) {
+            results.innerHTML = '';
+            return;
+        }
+        var q = query.toLowerCase();
+        var matched = [];
+        for (var i = 0; i < searchData.length; i++) {
+            var item = searchData[i];
+            if (item.title.toLowerCase().indexOf(q) > -1 ||
+                item.content.toLowerCase().indexOf(q) > -1 ||
+                (item.categories && item.categories.toLowerCase().indexOf(q) > -1)) {
+                matched.push(item);
+            }
+        }
+
+        if (matched.length === 0) {
+            results.innerHTML = '<p style="opacity: 0.6;">No results found.</p>';
+            return;
+        }
+
+        var html = '<p style="font-size: 1.2rem; opacity: 0.6; margin-bottom: 1rem;">Found ' + matched.length + ' result(s)</p>';
+        html += '<ul style="list-style: none; padding: 0;">';
+        for (var j = 0; j < matched.length; j++) {
+            var item = matched[j];
+            html += '<li style="padding: 1.2rem 0; border-bottom: 1px solid rgba(128,128,128,0.15);">';
+            html += '<a href="' + item.slug + '" style="font-size: 2rem; font-weight: bold; color: var(--accent-color); text-decoration: none;">' + item.title + '</a>';
+            html += '<div style="font-size: 1.35rem; opacity: 0.6; margin-top: 0.4rem;">' + item.date;
+            if (item.categories) html += ' · ' + item.categories;
+            html += '</div></li>';
+        }
+        html += '</ul>';
+        results.innerHTML = html;
+    }
+
+    input.addEventListener('input', function() {
+        doSearch(this.value);
+    });
+})();
+
+// Sidebar toggle
+(function() {
+    var btn = document.getElementById('searchSidebarToggle');
+    if (!btn) return;
+    btn.addEventListener('click', function() {
+        var sidebar = document.querySelector('.right-sidebar');
+        if (sidebar) sidebar.classList.toggle('sidebar-visible');
+    });
+})();
+</script>
+
+{{- partial "footer/footer" . -}}
+{{ end }}
+
+{{ define "right-sidebar" }}
+{{ partial "sidebar/right.html" (dict "Context" . "Scope" "page") }}
+{{ end }}

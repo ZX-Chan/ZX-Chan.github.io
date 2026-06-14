@@ -1,0 +1,129 @@
+/*
+    自定义样式覆盖
+*/
+
+/* 左侧导航栏字体放大 */
+.left-sidebar .menu li a {
+    font-size: 2rem !important;
+    padding: 0.8rem 0 !important;
+}
+
+.left-sidebar .site-name {
+    font-size: 1.8rem !important;
+}
+
+.left-sidebar .site-description {
+    font-size: 1.6rem !important;
+    line-height: 1.4 !important;
+}
+
+/* 头像没有浮动小图标 */
+.site-avatar .emoji {
+    display: none !important;
+}
+
+/* 右侧栏默认隐藏 + 切换 */
+.right-sidebar {
+    width: 280px !important;
+    display: none !important;
+}
+
+.right-sidebar.sidebar-visible {
+    display: block !important;
+}
+
+/* 右边栏内部间距 */
+.right-sidebar .widget {
+    margin-bottom: 2rem !important;
+    overflow: hidden;
+}
+
+.right-sidebar .tag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.right-sidebar .tag-cloud a {
+    font-size: 0.85rem !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 右侧栏隐藏时主内容区占满 */
+@media (min-width: 1024px) {
+    .left-sidebar + .main-content {
+        max-width: calc(100% - 280px - var(--gap)) !important;
+    }
+}
+
+.right-sidebar:not(.sidebar-visible) ~ .main-content {
+    max-width: calc(100% - 280px - var(--gap)) !important;
+    width: 100% !important;
+}
+
+/* Archives 页面标题栏 + 切换按钮 */
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.sidebar-toggle {
+    background: none !important;
+    border: 1px solid rgba(128,128,128,0.2) !important;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.5rem !important;
+    line-height: 1;
+    padding: 0.3rem 0.6rem !important;
+    color: var(--body-text-color);
+    transition: background 0.2s;
+}
+
+.sidebar-toggle:hover {
+    background: rgba(128,128,128,0.1) !important;
+}
+
+/* Archives 页面分类标签缩小 */
+.article-list .article-category a,
+.section-card .card-title {
+    font-size: 0.85rem !important;
+    padding: 0.15rem 0.5rem !important;
+}
+
+/* 文章列表条目紧凑 */
+.article-list .article-title {
+    font-size: 1.1rem !important;
+}
+
+/* 搜索栏样式 */
+.search-form.widget p {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.search-form.widget label {
+    display: none;
+}
+
+.search-form.widget input {
+    height: 3rem;
+    padding: 0 0.8rem;
+    font-size: 1rem;
+    line-height: 3rem;
+    box-sizing: border-box;
+}
+
+.search-form.widget button {
+    padding: 0;
+    width: 3rem;
+    height: 3rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}

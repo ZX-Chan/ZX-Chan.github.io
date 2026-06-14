@@ -1,0 +1,40 @@
+# Main menu — love is NOT here, only accessible via direct URL
+[[main]]
+identifier = "home"
+name = "Home"
+url = "/"
+weight = 1
+
+[[main]]
+identifier = "about"
+name = "About"
+url = "/about/"
+weight = 2
+
+[[main]]
+identifier = "archives"
+name = "Archives"
+url = "/archives/"
+weight = 3
+
+[[main]]
+identifier = "search"
+name = "Search"
+url = "/search/"
+weight = 4
+
+
+
+# Social links
+[[social]]
+identifier = "github"
+name = "GitHub"
+url = "https://github.com/ZX-Chan"
+
+[social.params]
+icon = "brand-github"
+
+[[social]]
+identifier = "email"
+name = "Email"
+url = "mailto:Dorayakiee@outlook.com"

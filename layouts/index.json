@@ -1,0 +1,15 @@
+{{- $.Scratch.Add "index" slice -}}
+{{- range .Site.RegularPages -}}
+{{- if and (not .Params.excludeSearch) (ne .Layout "search") -}}
+{{- $.Scratch.Add "index" (dict
+    "title" .Title
+    "description" (.Description | default "")
+    "content" (.Plain | htmlUnescape | strings.TrimSpace)
+    "date" (.PublishDate.Format "2006-01-02")
+    "slug" .RelPermalink
+    "categories" (delimit (.Params.categories | default slice) ", " )
+    "tags" (delimit (.Params.tags | default slice) ", " )
+) -}}
+{{- end -}}
+{{- end -}}
+{{- $.Scratch.Get "index" | jsonify -}}
