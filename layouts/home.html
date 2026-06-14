@@ -69,12 +69,12 @@
         <h2 style="border-bottom: 2px solid var(--accent-color); padding-bottom: 0.5rem; font-size: 1.4em;">📝 Publications</h2>
 
         {{ range $profile.publications }}
-        <div style="display: flex; gap: 2rem; padding: 1.5rem 0; 
+        <div style="display: flex; flex-wrap: wrap; gap: 1.5rem; padding: 1.5rem 0; 
                     border-bottom: 1px solid rgba(128,128,128,0.15);
                     align-items: flex-start;">
             
             {{ if .image }}
-            <div style="flex-shrink: 0; width: 360px; height: 200px;
+            <div style="flex-shrink: 0; width: 100%; max-width: 360px; height: 200px;
                         border-radius: 8px; overflow: hidden;
                         box-shadow: var(--shadow-l1);
                         background: rgba(128,128,128,0.05);">
