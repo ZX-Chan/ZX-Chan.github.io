@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💕 纪念日</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:linear-gradient(135deg,#fce4ec,#f8bbd0,#f48fb1);min-height:100vh;display:flex;justify-content:center;align-items:center;font-family:'Segoe UI','Microsoft YaHei UI',Arial,sans-serif;padding:1.5rem}
+        .container{background:rgba(255,255,255,0.88);backdrop-filter:blur(12px);border-radius:28px;padding:2.5rem 2rem;box-shadow:0 20px 60px rgba(212,129,142,0.2);text-align:center;max-width:480px;width:100%}
+        h1{font-size:2rem;color:#d4818e;margin-bottom:.3rem}
+        .sub{font-size:.95rem;color:#999;margin-bottom:2rem}
+        .big-number{font-size:4rem;font-weight:800;background:linear-gradient(135deg,#d4818e,#f48fb1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:.3rem}
+        .big-label{font-size:1.1rem;color:#68495b;margin-bottom:2rem}
+        .divider{width:60px;height:3px;background:linear-gradient(90deg,#d4818e,#f48fb1);border-radius:2px;margin:1.5rem auto}
+        .birthdays{display:flex;gap:1rem}
+        .birthday-card{flex:1;background:rgba(255,255,255,0.6);border-radius:16px;padding:1rem .8rem;box-shadow:0 2px 10px rgba(0,0,0,0.04)}
+        .birthday-card .label{font-size:1.3rem;color:#68495b;margin-bottom:.3rem;font-weight:600}
+        .birthday-card .date{font-size:1.1rem;font-weight:600;color:#68495b}
+        .birthday-card .countdown{font-size:1.4rem;font-weight:700;color:#d4818e;margin-top:.3rem}
+        .back-btn{display:inline-block;margin-top:2rem;background:transparent;border:2px solid #f1d5da;border-radius:16px;padding:.7rem 1.5rem;font-size:.9rem;cursor:pointer;text-decoration:none;color:#68495b;font-weight:600;transition:all .25s ease}
+        .back-btn:hover{background:#fce4ec;border-color:#d4818e}
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>💖 在一起</h1>
+    <p class="sub">2024.09.04 — forever</p>
+    <div class="big-number" id="daysDisplay">0</div>
+    <div class="big-label">天</div>
+    <div class="divider"></div>
+    <div class="birthdays">
+        <div class="birthday-card"><div class="label">🎂 小欣</div><div class="date">12.28</div><div class="countdown" id="herBirthday">--</div></div>
+        <div class="birthday-card"><div class="label">🎂 小轩</div><div class="date">05.18</div><div class="countdown" id="myBirthday">--</div></div>
+    </div>
+    <a href="../" class="back-btn">← 返回</a>
+</div>
+<script>
+const s=new Date(2024,8,4);
+function update(){
+    const n=new Date(),d=Math.floor((n-s)/864e5);
+    document.getElementById('daysDisplay').textContent=d;
+    let hb=new Date(n.getFullYear(),11,28);if(hb<n)hb.setFullYear(hb.getFullYear()+1);
+    document.getElementById('herBirthday').textContent=Math.ceil((hb-n)/864e5)+'天';
+    let mb=new Date(n.getFullYear(),4,18);if(mb<n)mb.setFullYear(mb.getFullYear()+1);
+    document.getElementById('myBirthday').textContent=Math.ceil((mb-n)/864e5)+'天'
+}
+update();setInterval(update,6e4);
+</script>
+</body>
+</html>

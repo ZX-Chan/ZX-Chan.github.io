@@ -41,6 +41,15 @@
             box-shadow: 0 8px 25px rgba(212,129,142,0.2);
         }
         .game-btn .icon { font-size: 1.5rem; margin-right: 0.5rem; }
+        .back-home {
+            display: inline-block; margin-top: 1.5rem;
+            background: transparent; border: 2px solid #f1d5da; border-radius: 16px;
+            padding: 0.8rem 1.5rem; font-size: 0.95rem; cursor: pointer; text-decoration: none;
+            color: #68495b; font-weight: 600; transition: all 0.25s ease;
+        }
+        .back-home:hover {
+            background: #fce4ec; border-color: #d4818e;
+        }
     </style>
 </head>
 <body>
@@ -54,14 +63,14 @@
             <a href="messages/" class="game-btn">
                 <span class="icon">💬</span> 满屏情话
             </a>
-
+            <a href="catch-hearts/" class="game-btn">
+                <span class="icon">🎮</span> 接住爱心
+            </a>
+            <a href="anniversary/" class="game-btn">
+                <span class="icon">📅</span> 纪念日
+            </a>
         </div>
-        <a href="../" style="display: inline-block; margin-top: 1.5rem;
-              background: transparent; border: 2px solid #f1d5da; border-radius: 16px;
-              padding: 0.8rem 1.5rem; font-size: 0.95rem; cursor: pointer; text-decoration: none;
-              color: #68495b; font-weight: 600; transition: all 0.25s ease;">
-            🏠 回到主页
-        </a>
+        <a href="../" class="back-home">🏠 回到主页</a>
     </div>
 </body>
 </html>

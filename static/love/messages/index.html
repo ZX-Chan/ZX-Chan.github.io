@@ -50,7 +50,7 @@
             left: 50%;
             transform: translateX(-50%);
             z-index: 100;
-            display: flex;
+            display: none;
             align-items: center;
             gap: 12px;
             background: rgba(255,255,255,0.85);
@@ -75,14 +75,7 @@
             min-width: 45px;
             font-weight: 600;
         }
-        .close-hint {
-            position: fixed;
-            top: 60px;
-            right: 30px;
-            color: #ccc;
-            font-size: 0.9rem;
-            z-index: 100;
-        }
+
     </style>
 </head>
 <body>
@@ -92,12 +85,15 @@
           color: #68495b; backdrop-filter: blur(4px); box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
         ← 返回
     </a>
-    <div class="close-hint">按 ESC 退出</div>
     <div class="hint">💕 点击屏幕开始</div>
     <div class="controls">
+        <button id="stopBtn" style="background: #d4818e; border: none; border-radius: 20px;
+               padding: 6px 16px; font-size: 0.85rem; cursor: pointer; color: #fff; font-weight: bold;">
+            ■ 停止
+        </button>
         <label>频率</label>
-        <input type="range" id="freqSlider" min="50" max="800" value="200">
-        <span class="speed-label" id="speedLabel">中</span>
+        <input type="range" id="freqSlider" min="1" max="100" value="75">
+        <span class="speed-label" id="speedLabel">快</span>
     </div>
 
     <script>
@@ -108,7 +104,17 @@
             "我好想你 🥺", "我真的好想你 😭", "宝宝我爱你 💖",
             "小欣宝宝 🐣", "小欣宝贝 🌷", "好爱你w 💝",
             "亲亲宝贝 😽", "要抱抱~ 🤗", "比心❤️",
-            "啾咪~ 💋", "喜欢喜欢喜欢 💫"
+            "啾咪~ 💋", "喜欢喜欢喜欢 💫",
+            "你是我的全世界 🌍", "遇见你真好 💞", "每天都想见你 ☀️",
+            "晚安我的宝贝 🌙", "早安呀 🌄", "你今天真好看 ✨",
+            "想牵你的手 🫶", "你是我最幸运的事 🍀", "好想抱抱你 🫂",
+            "你笑起来真好看 😊", "你是我的小确幸 🌈", "有你在真好 💝",
+            "我最喜欢你了 🌟", "你是我的唯一 💎", "想和你一起看日落 🌅",
+            "永远在一起 🤞", "今天也想你了 💭", "你好可爱呀 🥹",
+            "给你一个大大的拥抱 🫂", "我的心里只有你 💘",
+            "想陪你走过每一天 📅", "你是我的阳光 ☀️", "好想见你一面 😣",
+            "你在我心里是最美 🌹", "要一直幸福下去 💑", "我好喜欢你啊 💗",
+            "每天多爱你一点 📈", "你是我的宝藏 🏆", "想你了呀 🥺"
         ];
 
         const colors = [
@@ -123,7 +129,7 @@
             "#FFE6FF", "#DCC8FF"
         ];
 
-        const speedNames = { 50: "极快", 100: "很快", 200: "中", 400: "慢", 600: "很慢", 800: "极慢" };
+        const speedNames = [ [10,"极慢"], [30,"很慢"], [50,"慢"], [65,"中"], [80,"快"], [92,"很快"], [100,"极快"] ];
 
         let active = false;
         let running = true;
@@ -136,13 +142,16 @@
 
         function random(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
-        function getInterval() { return parseInt(slider.value); }
+        function getInterval() {
+            var v = parseInt(slider.value);
+            return Math.round(500 - (v / 100) * 485);
+        }
 
         function updateSpeedLabel() {
-            const v = getInterval();
-            let name = "中";
-            for (const [val, label] of Object.entries(speedNames)) {
-                if (v <= parseInt(val)) { name = label; break; }
+            const v = parseInt(slider.value);
+            let name = "极快";
+            for (const [t, l] of speedNames) {
+                if (v <= t) { name = l; break; }
             }
             speedLabel.textContent = name;
         }
@@ -174,10 +183,9 @@
             document.body.appendChild(el);
             msgCount++;
             
-            // 弹出动画
-            requestAnimationFrame(() => {
-                el.classList.add('show');
-            });
+            // 强制回流后再触发动画
+            el.offsetHeight;
+            el.classList.add('show');
             
             const stay = 2000 + Math.random() * 2000;
             setTimeout(() => {
@@ -204,8 +212,9 @@
             intervalId = setInterval(createMessage, getInterval());
         }
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
+        document.getElementById('stopBtn').addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (active) {
                 running = false;
                 clearInterval(intervalId);
                 document.querySelectorAll('.msg').forEach(el => {
@@ -213,10 +222,14 @@
                     el.style.opacity = '0';
                     setTimeout(() => el.remove(), 500);
                 });
-                document.querySelector('.hint').textContent = '已退出 💕 点击重新开始';
-                document.querySelector('.hint').style.display = 'block';
                 active = false;
-                setTimeout(() => { running = true; }, 500);
+                this.textContent = '▶ 开始';
+            } else {
+                running = true;
+                active = true;
+                intervalId = setInterval(createMessage, getInterval());
+                for (let i = 0; i < 15; i++) setTimeout(createMessage, i * 100);
+                this.textContent = '■ 停止';
             }
         });
 

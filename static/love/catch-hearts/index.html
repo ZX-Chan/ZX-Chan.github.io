@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>💗 接住爱心</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        body {
+            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            overflow: hidden;
+            touch-action: none;
+        }
+        #game {
+            position: relative;
+            width: 100%;
+            max-width: 420px;
+            height: 100vh;
+            max-height: 700px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 0 60px rgba(212,129,142,0.15);
+        }
+        #score {
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #fff;
+            font-size: 1.8rem;
+            font-weight: bold;
+            z-index: 20;
+            text-shadow: 0 2px 20px rgba(212,129,142,0.5);
+        }
+        #combo {
+            position: absolute;
+            top: 55px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #d4818e;
+            font-size: 1rem;
+            z-index: 20;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        #combo.show { opacity: 1; }
+        #basket {
+            position: absolute;
+            bottom: 30px;
+            width: 90px;
+            height: 70px;
+            z-index: 10;
+            pointer-events: none;
+        }
+        #basket svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 4px 20px rgba(212,129,142,0.4));
+        }
+        .heart-fall {
+            position: absolute;
+            z-index: 5;
+            pointer-events: none;
+            animation: none;
+        }
+        .heart-fall svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 2px 10px rgba(255,100,150,0.3));
+        }
+        @keyframes pop {
+            0% { transform: scale(0); opacity: 1; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+        .pop-text {
+            position: absolute;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ff6f91;
+            pointer-events: none;
+            z-index: 15;
+            animation: pop 0.6s ease forwards;
+        }
+        #start-screen, #end-screen {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            background: rgba(26,26,46,0.92);
+            backdrop-filter: blur(8px);
+            transition: opacity 0.5s;
+        }
+        #start-screen h1, #end-screen h1 {
+            font-size: 2.5rem;
+            color: #d4818e;
+            margin-bottom: 0.5rem;
+        }
+        #start-screen p, #end-screen p {
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 2rem;
+            font-size: 1rem;
+        }
+        #end-screen .final-score {
+            font-size: 3.5rem;
+            color: #ff6f91;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        #end-screen .final-text {
+            font-size: 1.1rem;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 2rem;
+        }
+        .btn {
+            background: #d4818e;
+            border: none;
+            border-radius: 30px;
+            padding: 14px 40px;
+            font-size: 1.1rem;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 20px rgba(212,129,142,0.3);
+        }
+        .btn:hover { transform: scale(1.05); box-shadow: 0 8px 30px rgba(212,129,142,0.5); }
+        .btn:active { transform: scale(0.95); }
+        .back-btn {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            z-index: 60;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            backdrop-filter: blur(4px);
+        }
+        .missed {
+            position: absolute;
+            color: rgba(255,100,100,0.5);
+            font-size: 1.2rem;
+            pointer-events: none;
+            z-index: 8;
+            animation: fadeUp 1s ease forwards;
+        }
+        @keyframes fadeUp {
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-40px); }
+        }
+    </style>
+</head>
+<body>
+    <a href="../" class="back-btn">← 返回</a>
+
+    <div id="game">
+        <div id="score">❤️ 0</div>
+        <div id="combo">🔥 连击 x0</div>
+
+        <div id="basket">
+            <svg viewBox="0 0 90 70">
+                <path d="M5 30 Q5 5 45 5 Q85 5 85 30 L80 65 Q45 75 10 65Z" 
+                      fill="#d4818e" opacity="0.85"/>
+                <rect x="20" y="10" width="50" height="8" rx="4" fill="#e8a0b0"/>
+                <line x1="25" y1="65" x2="20" y2="70" stroke="#c07080" stroke-width="3" stroke-linecap="round"/>
+                <line x1="65" y1="65" x2="70" y2="70" stroke="#c07080" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+        </div>
+
+        <div id="start-screen">
+            <h1>💗 接住爱心</h1>
+            <p>移动篮子接住掉落的爱心</p>
+            <button class="btn" id="startBtn">开始游戏</button>
+        </div>
+
+        <div id="end-screen" style="display:none;">
+            <h1>⏱️ 时间到</h1>
+            <div class="final-score" id="finalScore">0</div>
+            <div class="final-text" id="finalText">再接再厉 💪</div>
+            <button class="btn" id="restartBtn">再来一次</button>
+        </div>
+    </div>
+
+    <script>
+        const game = document.getElementById('game');
+        const basket = document.getElementById('basket');
+        const scoreEl = document.getElementById('score');
+        const comboEl = document.getElementById('combo');
+        const startScreen = document.getElementById('start-screen');
+        const endScreen = document.getElementById('end-screen');
+        const finalScore = document.getElementById('finalScore');
+        const finalText = document.getElementById('finalText');
+
+        let score = 0, combo = 0, maxCombo = 0, missed = 0;
+        let running = false, gameOver = false;
+        let basketX = 160, intervalId = null, spawnId = null;
+        const BASKET_W = 90, GAME_W = 420, GAME_H = 700;
+        let speed = 1.5;
+
+        const messages = ["❤️","💕","💗","💖","💘","💝","🥰","😘"];
+
+        function updateBasket() {
+            basket.style.left = basketX + 'px';
+        }
+
+        function moveBasket(clientX) {
+            const rect = game.getBoundingClientRect();
+            const relX = clientX - rect.left;
+            let x = relX - BASKET_W / 2;
+            x = Math.max(0, Math.min(GAME_W - BASKET_W, x));
+            basketX = x;
+            updateBasket();
+        }
+
+        // Mouse
+        game.addEventListener('mousemove', function(e) {
+            if (!running || gameOver) return;
+            moveBasket(e.clientX);
+        });
+
+        // Touch
+        game.addEventListener('touchmove', function(e) {
+            if (!running || gameOver) return;
+            e.preventDefault();
+            moveBasket(e.touches[0].clientX);
+        }, { passive: false });
+
+        function createHeart() {
+            if (!running || gameOver) return;
+            
+            const size = 30 + Math.random() * 25;
+            const x = Math.random() * (GAME_W - size);
+            const msg = messages[Math.floor(Math.random() * messages.length)];
+            
+            const el = document.createElement('div');
+            el.className = 'heart-fall';
+            el.style.width = size + 'px';
+            el.style.height = size + 'px';
+            el.style.left = x + 'px';
+            el.style.top = '-40px';
+            const cs = ["#ff6f91","#ff9a9e","#ffb6c1","#ffdab9","#ffc75f","#f9f871","#a078df","#d65db1","#6fb3a0","#87cefa","#ff9671","#ee82ee","#ff6b6b","#feca57","#ff9ff3","#54a0ff"];
+            const c = cs[Math.floor(Math.random()*cs.length)];
+            const emojis = ["❤️","💕","💗","💖","💘","💝","🥰","😘","💓","💞"];
+            const e = emojis[Math.floor(Math.random()*emojis.length)];
+            el.innerHTML = `<div style="width:${size}px;height:${size}px;display:flex;align-items:center;justify-content:center;font-size:${size*0.55}px;background:radial-gradient(circle at 35% 35%, ${c}, ${c}dd);border-radius:50%;box-shadow:0 4px 15px rgba(0,0,0,0.15),inset 0 -3px 10px rgba(0,0,0,0.1)">${e}</div>`;
+            
+            game.appendChild(el);
+            
+            let y = -40;
+            const spd = speed * (0.8 + Math.random() * 0.6);
+            
+            function fall() {
+                if (!running || gameOver) {
+                    if (el.parentNode) el.remove();
+                    return;
+                }
+                y += spd;
+                el.style.top = y + 'px';
+                
+                // Check catch
+                const bx = basketX;
+                const cx = x + size / 2;
+                const by = GAME_H - 30 - 70;
+                
+                if (y + size >= by - 20 && y + size <= by + 70 && cx >= bx - 10 && cx <= bx + BASKET_W + 10) {
+                    // Caught!
+                    el.remove();
+                    score++;
+                    combo++;
+                    if (combo > maxCombo) maxCombo = combo;
+                    if (combo > 3) speed = 1.5 + combo * 0.06;
+                    updateScore();
+                    
+                    // Pop effect
+                    const pop = document.createElement('div');
+                    pop.className = 'pop-text';
+                    pop.textContent = '❤️ +1';
+                    pop.style.left = (cx - 20) + 'px';
+                    pop.style.top = (by - 30) + 'px';
+                    game.appendChild(pop);
+                    setTimeout(() => pop.remove(), 600);
+                    return;
+                }
+                
+                // Missed
+                if (y > GAME_H) {
+                    el.remove();
+                    missed++;
+                    combo = 0;
+                    if (combo <= 3) speed = 1.5;
+                    updateScore();
+                    updateCombo();
+                    
+                    if (missed >= 5) endGame();
+                    return;
+                }
+                
+                requestAnimationFrame(fall);
+            }
+            
+            requestAnimationFrame(fall);
+        }
+
+        function updateScore() {
+            scoreEl.textContent = '❤️ ' + score;
+            updateCombo();
+        }
+
+        function updateCombo() {
+            if (combo >= 3) {
+                comboEl.textContent = '🔥 连击 x' + combo;
+                comboEl.classList.add('show');
+            } else {
+                comboEl.classList.remove('show');
+            }
+        }
+
+        function startGame() {
+            score = 0; combo = 0; maxCombo = 0; missed = 0; speed = 1.5;
+            running = true; gameOver = false;
+            startScreen.style.display = 'none';
+            endScreen.style.display = 'none';
+            updateScore();
+            updateBasket();
+            
+            // Remove leftover hearts
+            document.querySelectorAll('.heart-fall, .pop-text, .missed').forEach(el => el.remove());
+            
+            scoreEl.textContent = '❤️ 0';
+            
+            spawnId = setInterval(function() {
+                if (!running || gameOver) return;
+                createHeart();
+                // Sometimes spawn 2
+                if (Math.random() < 0.2) setTimeout(createHeart, 100);
+            }, 400);
+            
+            // 30 second timer
+            setTimeout(function() {
+                if (running && !gameOver) endGame();
+            }, 30000);
+        }
+
+        function endGame() {
+            gameOver = true;
+            running = false;
+            clearInterval(spawnId);
+            clearInterval(intervalId);
+            document.querySelectorAll('.heart-fall').forEach(el => el.remove());
+            
+            endScreen.style.display = 'flex';
+            finalScore.textContent = score;
+            
+            if (score >= 40) finalText.textContent = '太厉害了！你接住了所有的心 💖';
+            else if (score >= 25) finalText.textContent = '好浪漫～ 接住了好多爱心 💕';
+            else if (score >= 15) finalText.textContent = '还不错哦～ 再接再厉 💗';
+            else finalText.textContent = '再试一次吧，爱心在等你 ❤️';
+        }
+
+        document.getElementById('startBtn').addEventListener('click', startGame);
+        document.getElementById('restartBtn').addEventListener('click', startGame);
+    </script>
+</body>
+</html>
