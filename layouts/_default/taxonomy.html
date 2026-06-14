@@ -1,0 +1,41 @@
+{{ define "main" }}
+{{- $cat := .Title -}}
+{{- $pages := .Pages -}}
+
+{{- $catColors := dict
+    "Machine Learning" "#d4818e"
+    "Computer Networks" "#6784b1"
+    "AI Introduction" "#6fb3a0"
+    "Mathematical Logic" "#c7955e"
+    "Notes" "#a08fc9"
+-}}
+{{- $color := index $catColors $cat | default "var(--accent-color)" -}}
+
+<header class="page-header" style="display:flex;align-items:center;gap:1.5rem;">
+    <a href="/archives/" style="background:var(--card-background);border:1px solid rgba(128,128,128,0.2);border-radius:10px;padding:0.6rem 1.5rem;font-size:1.4rem;cursor:pointer;text-decoration:none;color:var(--body-text-color);white-space:nowrap;font-weight:600;">← All Categories</a>
+    <h1 style="font-size:2.2rem;margin:0;">{{ $cat }}</h1>
+</header>
+
+<div class="archives" style="margin-top:2rem;">
+    {{ range $pages }}
+    {{- $c := index .Params.categories 0 | default "" -}}
+    {{- $col := index $catColors $c | default "var(--accent-color)" -}}
+    <div class="archive-entry" style="padding:1.5rem 1.8rem;margin-bottom:1.2rem;
+                background:var(--card-background);border-radius:var(--card-border-radius);
+                box-shadow:var(--shadow-l1);border-left:5px solid {{ $col }};">
+        <h3 style="font-size:1.8rem;margin:0 0 0.4rem 0;">
+            <a href="{{ .RelPermalink }}" style="color:var(--body-text-color);text-decoration:none;">{{ .Title }}</a>
+        </h3>
+        <div style="display:flex;align-items:center;gap:1rem;font-size:1.2rem;">
+            <time datetime="{{ .PublishDate.Format "2006-01-02" }}" style="opacity:0.6;">{{ .PublishDate.Format "2006-01-02" }}</time>
+        </div>
+    </div>
+    {{ end }}
+</div>
+
+{{- partial "footer/footer" . -}}
+{{ end }}
+
+{{ define "right-sidebar" }}
+{{ partial "sidebar/right.html" (dict "Context" . "Scope" "page") }}
+{{ end }}

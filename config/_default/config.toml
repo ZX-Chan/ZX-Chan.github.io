@@ -12,7 +12,7 @@ copyright = ""
 
 # 分页
 [pagination]
-pagerSize = 7
+pagerSize = 50
 
 # 搜索用 JSON 输出
 [outputs]

@@ -14,7 +14,7 @@ tags:
 - IPv4是不可靠的
 - best-effort
 ### IPv4 Datagram
-![](/images/notes/计算机网络/Pasted image 20241231120223.png)
+![](/images/notes/computer-networks/Pasted_image_20241231120223.png)
 - Version：定义IPv4版本
 - HeaderLength：由于数据报的头长度是可变的，需要定义总长度
 	- 需要$\times 4$

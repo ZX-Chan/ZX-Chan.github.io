@@ -30,25 +30,25 @@ tags:
 - 1秒内发送的位数
 ### 数字信号的传输
 #### 基带传输
-通过通道发送数字信号，不转换成模拟信号。需要一个带宽下限频率为0的低通通道。![](/images/notes/计算机网络/Pasted image 20241226152005.png)
+通过通道发送数字信号，不转换成模拟信号。需要一个带宽下限频率为0的低通通道。![](/images/notes/computer-networks/Pasted_image_20241226152005.png)
 只有我们有无穷大或非常大带宽的低通通道，保持数字信号形状的数字信号基带传输才是可能的。
 #### 宽带传输
 把数字信号转换成模拟信号传输，允许使用带通通道。
 - 带通通道：带宽不从0开始的通道
-![](/images/notes/计算机网络/Pasted image 20241226152412.png)
+![](/images/notes/computer-networks/Pasted_image_20241226152412.png)
 如果可用通道是带通通道，我们不能直接发送数字信号到通道；
 我们需要在传输前把数字信号转换成模拟信号。
 
 ## 传输减损
 ### 衰减
-![](/images/notes/计算机网络/Pasted image 20241226152642.png)
+![](/images/notes/computer-networks/Pasted_image_20241226152642.png)
 - 分贝：dB
 一个纯计数单位，没有单位
 $dB=10log_{10} \frac{P_1}{P_2}$
 ### 失真
-![](/images/notes/计算机网络/Pasted image 20241226153022.png)
+![](/images/notes/computer-networks/Pasted_image_20241226153022.png)
 ### 噪声
-![](/images/notes/计算机网络/Pasted image 20241226153039.png)
+![](/images/notes/computer-networks/Pasted_image_20241226153039.png)
 - 信噪比 SNR
 
 ## 数据速率限制

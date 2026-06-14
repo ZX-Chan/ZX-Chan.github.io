@@ -3,3 +3,16 @@
     <div class="footer-text">{{ . | safeHTML }}</div>
     {{ end }}
 </footer>
+
+<script>
+(function() {
+    var path = window.location.pathname;
+    if (path.indexOf('/post/') !== 0) return;
+    
+    var btn = document.createElement('a');
+    btn.href = 'javascript:history.back()';
+    btn.innerHTML = '← Back';
+    btn.style.cssText = 'position:fixed;top:20px;right:20px;z-index:9999;background:var(--card-background);border:1px solid rgba(128,128,128,0.2);border-radius:10px;padding:0.6rem 1.5rem;font-size:1.3rem;cursor:pointer;text-decoration:none;color:var(--body-text-color);font-weight:600;box-shadow:var(--shadow-l1);';
+    document.body.appendChild(btn);
+})();
+</script>
