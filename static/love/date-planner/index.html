@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f8dce2">
+    <title>给小欣的约会小计划</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="petals" aria-hidden="true"></div>
+    <a class="back-link" href="../" aria-label="返回 love 页面">← 返回</a>
+
+    <main class="date-app">
+        <section class="date-card" aria-live="polite">
+            <div class="step-view" id="inviteView">
+                <p class="eyebrow">FOR 小欣 <span aria-hidden="true">💌</span></p>
+                <h1>要不要和我<br>约个会？</h1>
+                <p class="intro">留一个只属于我们的下午或夜晚。</p>
+                <div class="invite-actions">
+                    <button class="primary-button" id="yesButton" type="button">好呀 <span aria-hidden="true">♥</span></button>
+                    <button class="secondary-button" id="noButton" type="button">再想想 <span aria-hidden="true">🥺</span></button>
+                </div>
+            </div>
+
+            <div class="step-view" id="plannerView" hidden>
+                <p class="eyebrow">FOR 小欣 · DATE PLANNER</p>
+                <h1>什么时候有空？ <span aria-hidden="true">🌷</span></h1>
+                <p class="intro">小欣，选一个你喜欢的时间吧 <span aria-hidden="true">✨</span></p>
+
+                <div class="planner-layout">
+                    <section class="planner-section" aria-labelledby="dateLabel">
+                        <div class="section-label" id="dateLabel">选择日期 <span aria-hidden="true">📅</span></div>
+                        <div class="calendar-shell">
+                            <div class="calendar-header">
+                                <button class="icon-button" id="previousMonth" type="button" aria-label="上个月">‹</button>
+                                <strong id="monthLabel"></strong>
+                                <button class="icon-button" id="nextMonth" type="button" aria-label="下个月">›</button>
+                            </div>
+                            <div class="weekday-row" aria-hidden="true">
+                                <span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span>
+                            </div>
+                            <div class="calendar-grid" id="calendarGrid" aria-label="选择日期"></div>
+                        </div>
+                    </section>
+
+                    <section class="planner-section" aria-labelledby="timeLabel">
+                        <div class="section-label" id="timeLabel">选择时间 <span aria-hidden="true">🕰️</span></div>
+                        <div class="time-grid" id="timeGrid"></div>
+                    </section>
+                </div>
+
+                <button class="primary-button confirm-button" id="confirmButton" type="button" disabled>下一步 <span aria-hidden="true">🍽️</span></button>
+            </div>
+
+            <div class="step-view" id="foodView" hidden>
+                <p class="eyebrow">FOR 小欣 · FOOD MOOD</p>
+                <h1>What are we feeling? <span aria-hidden="true">🍽️✨</span></h1>
+                <p class="intro">小欣，今天想吃点什么？</p>
+
+                <div class="food-grid" id="foodGrid" role="group" aria-label="选择想吃的食物">
+                    <button class="food-option" type="button" data-food="披萨" data-emoji="🍕"><span class="food-emoji" aria-hidden="true">🍕</span><span>披萨</span></button>
+                    <button class="food-option" type="button" data-food="寿司" data-emoji="🍣"><span class="food-emoji" aria-hidden="true">🍣</span><span>寿司</span></button>
+                    <button class="food-option" type="button" data-food="汉堡" data-emoji="🍔"><span class="food-emoji" aria-hidden="true">🍔</span><span>汉堡</span></button>
+                    <button class="food-option" type="button" data-food="意面" data-emoji="🍝"><span class="food-emoji" aria-hidden="true">🍝</span><span>意面</span></button>
+                    <button class="food-option" type="button" data-food="墨西哥卷" data-emoji="🌮"><span class="food-emoji" aria-hidden="true">🌮</span><span>墨西哥卷</span></button>
+                    <button class="food-option" type="button" data-food="拉面" data-emoji="🍜"><span class="food-emoji" aria-hidden="true">🍜</span><span>拉面</span></button>
+                </div>
+
+                <button class="primary-button food-next-button" id="foodNextButton" type="button" disabled>就这么定啦 <span aria-hidden="true">♥</span></button>
+            </div>
+
+            <div class="step-view celebration-view" id="completeView" hidden>
+                <p class="eyebrow">给小欣 · 我们的约会</p>
+                <h1>太好啦！ <span aria-hidden="true">💕</span></h1>
+                <dl class="celebration-details">
+                    <div class="celebration-detail"><dt aria-hidden="true">📅</dt><dd id="confirmedDate"></dd></div>
+                    <div class="celebration-detail"><dt aria-hidden="true">⏰</dt><dd id="confirmedTime"></dd></div>
+                    <div class="celebration-detail"><dt aria-hidden="true">🍽️</dt><dd id="confirmedFood"></dd></div>
+                </dl>
+                <p class="intro">我已经迫不及待想见到你啦！ <span aria-hidden="true">🌷✨</span></p>
+                <button class="secondary-button" id="restartButton" type="button">重新选一次</button>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

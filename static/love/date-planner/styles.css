@@ -1,0 +1,493 @@
+:root {
+    --ink: #68495b;
+    --muted: #8f7180;
+    --rose: #e96c98;
+    --rose-dark: #cb4d7a;
+    --rose-pale: #fff1f5;
+    --paper: rgba(255, 255, 255, 0.92);
+    --line: #f2ced9;
+    --soft-font: ui-rounded, "SF Pro Rounded", "PingFang SC", "Microsoft YaHei UI", "Microsoft YaHei", "Segoe UI", sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    min-width: 320px;
+    min-height: 100vh;
+    margin: 0;
+    overflow-x: hidden;
+    background: linear-gradient(125deg, #fce6ec 0%, #fdf4f6 52%, #f9eddc 100%);
+    color: var(--ink);
+    font-family: var(--soft-font);
+}
+
+button { font: inherit; }
+
+.date-app {
+    display: grid;
+    min-height: 100vh;
+    place-items: center;
+    padding: 5rem 2rem 2rem;
+}
+
+.date-card {
+    position: relative;
+    width: min(100%, 46rem);
+    min-height: 37rem;
+    padding: 4.8rem 4.6rem;
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    border-radius: 24px;
+    background: var(--paper);
+    box-shadow: 0 2.4rem 5rem rgba(124, 64, 86, 0.12);
+    text-align: center;
+}
+
+.step-view { animation: reveal 0.35s ease backwards; }
+.step-view[hidden] { display: none; }
+
+.eyebrow {
+    margin: 0 0 1.4rem;
+    color: var(--rose-dark);
+    font-family: var(--soft-font);
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.18rem;
+}
+
+h1 {
+    margin: 0;
+    color: var(--rose-dark);
+    font-family: var(--soft-font);
+    font-size: 3.8rem;
+    font-weight: 500;
+    line-height: 1.2;
+}
+
+.intro {
+    max-width: 28rem;
+    margin: 1.8rem auto 0;
+    color: var(--muted);
+    font-family: var(--soft-font);
+    font-size: 1.5rem;
+    line-height: 1.7;
+}
+
+.invite-actions {
+    position: relative;
+    min-height: 10.4rem;
+    margin: 4rem auto 0;
+}
+
+.invite-actions .primary-button {
+    width: 100%;
+}
+
+.invite-actions .secondary-button {
+    position: absolute;
+    bottom: 0.6rem;
+    left: 50%;
+    min-width: 7.6rem;
+    transform: translateX(-50%);
+}
+
+.primary-button,
+.secondary-button,
+.icon-button,
+.time-button,
+.day-button { border: 0; cursor: pointer; }
+
+.primary-button {
+    min-height: 5.6rem;
+    padding: 1.2rem 2.4rem;
+    border-radius: 16px;
+    background: var(--rose);
+    box-shadow: 0 1rem 2rem rgba(201, 75, 119, 0.24);
+    color: #fff;
+    font-family: var(--soft-font);
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: 0.04rem;
+    transition: background-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+.primary-button:hover,
+.primary-button:focus-visible {
+    background: var(--rose-dark);
+    box-shadow: 0 1.3rem 2.4rem rgba(201, 75, 119, 0.3);
+    transform: translateY(-2px);
+}
+
+.primary-button:disabled {
+    cursor: not-allowed;
+    background: #e5b4c5;
+    box-shadow: none;
+    transform: none;
+}
+
+.secondary-button {
+    min-height: 3.6rem;
+    padding: 0.6rem 1.2rem;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: transparent;
+    color: var(--muted);
+    font-family: var(--soft-font);
+    font-size: 1.15rem;
+    font-weight: 500;
+    transition: border-color 0.2s, color 0.2s, background-color 0.2s;
+}
+
+.secondary-button.is-escaping {
+    position: fixed;
+    z-index: 10;
+    transform: none;
+}
+
+.secondary-button:hover,
+.secondary-button:focus-visible {
+    border-color: var(--rose);
+    background: var(--rose-pale);
+    color: var(--rose-dark);
+}
+
+.back-link {
+    position: fixed;
+    z-index: 5;
+    top: 2rem;
+    left: 2rem;
+    padding: 0.8rem 1.2rem;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.52);
+    color: var(--ink);
+    font-family: var(--soft-font);
+    font-size: 1.3rem;
+    text-decoration: none;
+    backdrop-filter: blur(8px);
+}
+
+.back-link:hover,
+.back-link:focus-visible { background: rgba(255, 255, 255, 0.9); }
+
+.planner-section { margin-top: 2.8rem; text-align: left; }
+
+.planner-layout { margin-top: 2.8rem; }
+
+.date-card.is-planning {
+    width: min(100%, 64rem);
+    min-height: 0;
+    padding: 3rem 3.6rem;
+}
+
+.date-card.is-planning h1 { font-size: 3.2rem; }
+
+.date-card.is-planning .intro {
+    margin-top: 0.9rem;
+    font-size: 1.35rem;
+}
+
+.date-card.is-planning .planner-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(18rem, 0.85fr);
+    gap: 2.2rem;
+    align-items: start;
+    margin-top: 2.2rem;
+}
+
+.date-card.is-planning .planner-section { margin: 0; }
+
+.date-card.is-planning .calendar-shell { padding: 1.2rem; }
+
+.date-card.is-planning .calendar-header { margin-bottom: 0.8rem; }
+
+.date-card.is-planning .weekday-row,
+.date-card.is-planning .calendar-grid { gap: 0.35rem; }
+
+.date-card.is-planning .weekday-row { margin-bottom: 0.5rem; }
+
+.date-card.is-planning .time-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.7rem;
+}
+
+.date-card.is-planning .time-button { min-height: 3.7rem; }
+
+.date-card.is-planning .confirm-button {
+    min-height: 4.8rem;
+    margin-top: 2.2rem;
+}
+
+.date-card.is-food-choosing {
+    width: min(100%, 46rem);
+    min-height: 0;
+    padding: 3.6rem;
+}
+
+.date-card.is-food-choosing h1 { font-size: 3.2rem; }
+
+.date-card.is-food-choosing .intro {
+    margin-top: 0.9rem;
+    font-size: 1.35rem;
+}
+
+.food-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin: 2.6rem auto 0;
+}
+
+.food-option {
+    display: flex;
+    min-height: 9rem;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background: rgba(255, 241, 245, 0.68);
+    color: var(--ink);
+    cursor: pointer;
+    font-family: var(--soft-font);
+    font-size: 1.25rem;
+    font-weight: 600;
+    transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+.food-option:hover,
+.food-option:focus-visible {
+    border-color: var(--rose);
+    background: #fff;
+    transform: translateY(-2px);
+}
+
+.food-option.is-selected {
+    border-color: var(--rose);
+    background: var(--rose-pale);
+    box-shadow: inset 0 0 0 1px var(--rose), 0 0.7rem 1.5rem rgba(201, 75, 119, 0.12);
+    color: var(--rose-dark);
+}
+
+.food-emoji { font-size: 2.7rem; }
+
+.food-next-button {
+    width: 100%;
+    min-height: 4.8rem;
+    margin-top: 2.2rem;
+}
+
+.section-label {
+    margin-bottom: 0.8rem;
+    color: var(--muted);
+    font-family: var(--soft-font);
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+.calendar-shell {
+    padding: 1.6rem;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background: rgba(255, 241, 245, 0.5);
+}
+
+.calendar-header {
+    display: grid;
+    grid-template-columns: 3rem 1fr 3rem;
+    align-items: center;
+    margin-bottom: 1.4rem;
+    text-align: center;
+}
+
+.calendar-header strong { font-family: var(--soft-font); font-size: 1.4rem; }
+
+.icon-button {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--muted);
+    font-size: 2.2rem;
+    line-height: 1;
+}
+
+.icon-button:hover,
+.icon-button:focus-visible { background: #fff; color: var(--rose-dark); }
+
+.weekday-row,
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 0.5rem;
+}
+
+.weekday-row {
+    margin-bottom: 0.7rem;
+    color: var(--muted);
+    font-family: var(--soft-font);
+    font-size: 1.1rem;
+    text-align: center;
+}
+
+.day-button,
+.calendar-empty { display: grid; aspect-ratio: 1; place-items: center; }
+
+.day-button {
+    border-radius: 50%;
+    background: transparent;
+    color: var(--ink);
+    font-family: var(--soft-font);
+    font-size: 1.2rem;
+}
+
+.day-button:hover:not(:disabled),
+.day-button:focus-visible:not(:disabled) { background: #fff; color: var(--rose-dark); }
+
+.day-button.is-selected {
+    background: var(--rose);
+    box-shadow: 0 0.4rem 1rem rgba(201, 75, 119, 0.24);
+    color: #fff;
+    font-weight: 700;
+}
+
+.day-button:disabled { cursor: not-allowed; color: #cdbec4; }
+
+.time-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.8rem;
+}
+
+.time-button {
+    min-height: 3.8rem;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: #fff;
+    color: var(--ink);
+    font-family: var(--soft-font);
+    font-size: 1.2rem;
+}
+
+.time-button:hover,
+.time-button:focus-visible { border-color: var(--rose); color: var(--rose-dark); }
+
+.time-button.is-selected {
+    border-color: var(--rose);
+    background: var(--rose-pale);
+    box-shadow: inset 0 0 0 1px var(--rose);
+    color: var(--rose-dark);
+    font-weight: 700;
+}
+
+.confirm-button { width: 100%; margin-top: 3rem; }
+
+.celebration-view {
+    max-width: 38rem;
+    margin: 0 auto;
+    padding-top: 1rem;
+}
+
+.celebration-view h1 { font-size: 4rem; }
+
+.celebration-details {
+    display: grid;
+    gap: 1.3rem;
+    margin: 2.8rem 0 0;
+}
+
+.celebration-detail {
+    display: grid;
+    grid-template-columns: 3.2rem minmax(0, 1fr);
+    align-items: center;
+    gap: 1rem;
+    margin: 0;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+}
+
+.celebration-detail dt {
+    margin: 0;
+    font-size: 2.2rem;
+    line-height: 1;
+    text-align: center;
+}
+
+.celebration-detail dd {
+    margin: 0;
+    color: var(--rose-dark);
+    font-family: var(--soft-font);
+    font-size: 1.7rem;
+    font-weight: 700;
+}
+
+.celebration-view .intro { margin-top: 2.2rem; }
+
+.celebration-view .secondary-button { margin-top: 2.2rem; }
+
+.petals {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.petal {
+    position: absolute;
+    top: -10vh;
+    color: rgba(216, 93, 137, 0.42);
+    font-size: 1.8rem;
+    animation: drift linear infinite;
+}
+
+@keyframes reveal {
+    from { opacity: 0; transform: translateY(1.2rem); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes drift {
+    from { transform: translate3d(0, -5vh, 0) rotate(0deg); }
+    to { transform: translate3d(5vw, 112vh, 0) rotate(300deg); }
+}
+
+@keyframes beat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+}
+
+@media (max-width: 600px) {
+    .date-app { align-items: start; padding: 7rem 1.6rem 2rem; }
+    .date-card { min-height: 0; padding: 3.6rem 2rem; }
+    h1 { font-size: 3.4rem; }
+    .date-card.is-planning { padding: 3.6rem 2rem; }
+    .date-card.is-planning h1 { font-size: 3.4rem; }
+    .date-card.is-planning .planner-layout { display: block; margin-top: 0; }
+    .date-card.is-planning .planner-section { margin-top: 2.8rem; }
+    .date-card.is-planning .time-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .date-card.is-food-choosing { padding: 3.6rem 2rem; }
+    .date-card.is-food-choosing h1 { font-size: 2.4rem; }
+    .food-grid { gap: 0.8rem; margin-top: 2rem; }
+    .food-option { min-height: 8rem; }
+    .celebration-view { padding-top: 0; }
+    .celebration-view h1 { font-size: 3.6rem; }
+    .celebration-detail dd { font-size: 1.5rem; }
+    .time-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .back-link { top: 1.4rem; left: 1.4rem; }
+}
+
+@media (min-width: 601px) and (max-width: 860px) {
+    .date-card.is-planning { width: min(100%, 46rem); }
+    .date-card.is-planning .planner-layout { display: block; }
+    .date-card.is-planning .planner-section + .planner-section { margin-top: 2.4rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

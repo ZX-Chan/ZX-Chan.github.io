@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f8dce2">
+    <title>小欣的图片小屋</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <a class="back-link" href="../" aria-label="返回 love 页面">← 返回</a>
+
+    <main class="studio-shell">
+        <section class="studio-card" aria-labelledby="studioTitle">
+            <header class="studio-header">
+                <h1 id="studioTitle">小欣的图片小屋 <span aria-hidden="true">💖</span></h1>
+            </header>
+
+            <div class="mode-switch" role="tablist" aria-label="图片处理模式">
+                <button class="mode-button is-active" id="editMode" type="button" role="tab" aria-selected="true" aria-controls="editControls" data-mode="edit">修图 <span aria-hidden="true">🖼️</span></button>
+                <button class="mode-button" id="generateMode" type="button" role="tab" aria-selected="false" aria-controls="generateControls" data-mode="generate">生图 <span aria-hidden="true">🌷</span></button>
+            </div>
+
+            <div class="studio-layout">
+                <section class="control-panel" aria-label="创作设置">
+                    <label class="field" for="apiKey">
+                        <span class="field-label">API Key</span>
+                        <span class="key-input-wrap">
+                            <input id="apiKey" type="password" inputmode="text" autocomplete="off" spellcheck="false" placeholder="sk-..." aria-describedby="keyNote">
+                            <button class="key-visibility" id="toggleKey" type="button" aria-label="显示 API Key" title="显示 API Key">◉</button>
+                        </span>
+                        <small id="keyNote">只在本次页面处理中使用，不会保存。</small>
+                    </label>
+
+                    <label class="field" for="prompt">
+                        <span class="field-label" id="promptLabel">想怎么改？</span>
+                        <textarea id="prompt" rows="5" maxlength="2000" placeholder="例如：把衣服改成红色夹克，其他保持不变"></textarea>
+                    </label>
+
+                    <label class="field" for="imageSize">
+                        <span class="field-label">图片尺寸</span>
+                        <select class="size-select" id="imageSize">
+                            <option value="1024x1024" selected>方形 1024 x 1024</option>
+                            <option value="1536x1024">横图 1536 x 1024</option>
+                            <option value="1024x1536">竖图 1024 x 1536</option>
+                            <option value="2048x2048">2K 方形 2048 x 2048</option>
+                        </select>
+                    </label>
+
+                    <section class="image-picker" id="imagePicker" aria-labelledby="sourceImageLabel">
+                        <span class="field-label" id="sourceImageLabel">原图</span>
+                        <label class="dropzone" id="sourceImageTrigger" for="sourceImage">
+                            <span class="dropzone-icon" aria-hidden="true">📷</span>
+                            <span>选择一张图片</span>
+                            <small>PNG、JPG、WEBP，最大 20 MB</small>
+                        </label>
+                        <input id="sourceImage" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+                        <div class="source-preview" id="sourcePreview" hidden>
+                            <img id="sourcePreviewImage" alt="待编辑图片预览">
+                            <button class="remove-image" id="removeImage" type="button" aria-label="移除原图" title="移除原图">×</button>
+                        </div>
+                    </section>
+
+                    <button class="run-button" id="runButton" type="button" disabled>开始修图 <span aria-hidden="true">✨</span></button>
+                </section>
+
+                <section class="result-panel" aria-labelledby="resultTitle">
+                    <div class="result-heading">
+                        <span id="resultTitle">作品预览</span>
+                        <span class="result-tag" id="resultTag">等待灵感</span>
+                    </div>
+                    <div class="result-canvas" id="resultCanvas">
+                        <div class="empty-result" id="emptyResult">
+                            <span aria-hidden="true">💗</span>
+                            <p>新的画面会出现在这里</p>
+                            <small class="wait-note">生成通常需要 1 到 2 分钟，请耐心等候。</small>
+                        </div>
+                        <img id="resultImage" alt="生成的图片" hidden>
+                        <div class="loading-result" id="loadingResult" hidden>
+                            <span class="spinner" aria-hidden="true"></span>
+                            <p>正在把想法变成画面…</p>
+                        </div>
+                    </div>
+                    <p class="status-message" id="statusMessage" role="status" aria-live="polite"></p>
+                    <button class="download-button" id="downloadButton" type="button" disabled hidden>下载图片 <span aria-hidden="true">↓</span></button>
+                </section>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

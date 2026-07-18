@@ -1,0 +1,34 @@
+<article class="{{ if .Params.image }}has-image {{ end }}main-article">
+    <nav class="article-back-nav" aria-label="Article navigation">
+        <a href="{{ "archives/" | relURL }}">
+            {{ partial "helper/icon" "arrow-back" }}
+            <span>Back to notes</span>
+        </a>
+    </nav>
+
+    {{ partial "article/components/header" (dict "Page" . "IsList" false) }}
+
+    {{ $hasHeadings := gt (len .Fragments.Headings) 0 }}
+    {{ if and (.Scratch.Get "TOCEnabled") $hasHeadings }}
+    <aside class="article-toc">
+        <details>
+            <summary>
+                <div class="article-toc-title">
+                    {{ partial "helper/icon" "chevron-right" }}
+                    <span>{{ T "article.tableOfContents" }}</span>
+                </div>
+            </summary>
+            <nav class="toc-nav">
+                {{ partial "article/components/toc" . | safeHTML }}
+            </nav>
+        </details>
+    </aside>
+    {{ end }}
+
+    {{ partial "article/components/content" . }}
+    {{ partial "article/components/footer" . }}
+
+    {{ if or .Params.math .Site.Params.article.math }}
+        {{ partial "article/components/math.html" . }}
+    {{ end }}
+</article>

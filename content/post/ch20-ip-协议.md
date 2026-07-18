@@ -9,7 +9,6 @@ tags:
     - "notes"
 ---
 
-# CH20 IP 协议
 ## IPv4
 - IPv4是不可靠的
 - best-effort

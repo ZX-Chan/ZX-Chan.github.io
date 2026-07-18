@@ -9,7 +9,6 @@ tags:
     - "notes"
 ---
 
-# CH1 机器学习绪论
 - Regression
 - Classification
 - [?] Machine Learning 只包含上述两种任务吗？

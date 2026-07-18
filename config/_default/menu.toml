@@ -48,3 +48,6 @@ icon = "brand-github"
 identifier = "email"
 name = "Email"
 url = "mailto:Dorayakiee@outlook.com"
+
+[social.params]
+icon = "messages"

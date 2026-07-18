@@ -1,116 +1,91 @@
 {{ define "main" }}
 {{- $profile := hugo.Data.profile -}}
 
-<article class="main-article">
-    <section class="article-content" style="font-size: 16px; line-height: 1.8;">
-        
-        <div class="profile-header" style="text-align: center; margin-bottom: 2rem;">
-            <h1 style="font-size: 3.8em; margin-bottom: 0.5rem; 
-                   font-family: 'Dancing Script', 'Pacifico', cursive;
-                   background: linear-gradient(135deg, var(--accent-color), #a08fc9);
-                   -webkit-background-clip: text;
-                   -webkit-text-fill-color: transparent;
-                   background-clip: text;
-                   font-weight: 700;
-                   letter-spacing: 4px;">{{ $profile.name }}</h1>
-        </div>
+<article class="main-article profile-page">
+    <section class="article-content profile-content">
+        <header class="profile-hero">
+            <h1>{{ $profile.name }}</h1>
+        </header>
 
-        <!-- Contact bar -->
-        <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; 
-                    padding: 1rem; background: var(--card-background); border-radius: var(--card-border-radius);
-                    box-shadow: var(--shadow-l1); margin-bottom: 2rem;">
-            
-            <span style="display: flex; align-items: center; gap: 0.3rem;">
-                <span style="display: inline-flex; align-items: center; width: 1.2em; height: 1.2em;">
-                    {{ partial "helper/icon" "date" }}
+        <ul class="profile-contact-list" aria-label="Contact information">
+            <li>
+                <span class="profile-contact-icon" aria-hidden="true">
+                    {{ partial "helper/icon" "location" }}
                 </span>
                 <span>{{ $profile.location }}</span>
-            </span>
-
+            </li>
             {{ range $profile.contacts }}
-            <span style="display: flex; align-items: center; gap: 0.3rem;">
-                <span style="display: inline-flex; align-items: center; width: 1.2em; height: 1.2em;">
+            <li>
+                <span class="profile-contact-icon" aria-hidden="true">
                     {{ partial "helper/icon" .icon }}
                 </span>
-                <a href="{{ .url }}" target="_blank" rel="noopener">{{ .label }}</a>
-            </span>
+                <a href="{{ .url }}"{{ if strings.HasPrefix .url "http" }} target="_blank" rel="noopener"{{ end }}>{{ .label }}</a>
+            </li>
             {{ end }}
-        </div>
+        </ul>
 
-        <!-- Bio -->
-        <div style="margin-bottom: 2rem; line-height: 1.8;">
+        <div class="profile-bio">
             {{ range $profile.bio }}
             <p>{{ . | safeHTML }}</p>
             {{ end }}
         </div>
 
-        <!-- Education -->
-        <h2 style="border-bottom: 2px solid var(--accent-color); padding-bottom: 0.5rem; font-size: 1.4em;">📖 Education</h2>
-        <ul style="list-style: none; padding: 0;">
-            {{ range $index, $item := $profile.education }}
-            <li style="padding: 0.6rem 0; {{ if not (eq $index (sub (len $profile.education) 1)) }}border-bottom: 1px solid rgba(128,128,128,0.2);{{ end }}">
-                <strong>{{ .period }}</strong> · {{ .title }}, 
-                <em>{{ .school }}</em>
-            </li>
-            {{ end }}
-        </ul>
+        <section class="profile-section" aria-labelledby="education-title">
+            <h2 id="education-title">Education</h2>
+            <ul class="education-list">
+                {{ range $profile.education }}
+                <li>
+                    <strong class="education-period">{{ .period }}</strong>
+                    <div class="education-details">
+                        <span>{{ .title }}</span>
+                        <em>{{ .school }}</em>
+                    </div>
+                </li>
+                {{ end }}
+            </ul>
+        </section>
 
-        <!-- News -->
-        <h2 style="border-bottom: 2px solid var(--accent-color); padding-bottom: 0.5rem; font-size: 1.4em;">🔥 News</h2>
-        <ul style="list-style: none; padding: 0;">
-            {{ range $index, $item := $profile.news }}
-            <li style="padding: 0.5rem 0; {{ if not (eq $index (sub (len $profile.news) 1)) }}border-bottom: 1px solid rgba(128,128,128,0.2);{{ end }}">
-                <span style="color: var(--accent-color); font-weight: 600;">{{ .date }}</span>:
-                {{ .tag }} {{ .text | safeHTML }}
-            </li>
-            {{ end }}
-        </ul>
+        <section class="profile-section" aria-labelledby="news-title">
+            <h2 id="news-title">News</h2>
+            <ul class="news-list">
+                {{ range $profile.news }}
+                <li>
+                    <time>{{ .date }}</time>
+                    <span>{{ .tag }} {{ .text | safeHTML }}</span>
+                </li>
+                {{ end }}
+            </ul>
+        </section>
 
-        <!-- Publications -->
-        <h2 style="border-bottom: 2px solid var(--accent-color); padding-bottom: 0.5rem; font-size: 1.4em;">📝 Publications</h2>
-
-        {{ range $profile.publications }}
-        <div style="display: flex; flex-wrap: wrap; gap: 1.5rem; padding: 1.5rem 0; 
-                    border-bottom: 1px solid rgba(128,128,128,0.15);
-                    align-items: flex-start;">
-            
-            {{ if .image }}
-            <div style="flex-shrink: 0; width: 100%; max-width: 360px; height: 200px;
-                        border-radius: 8px; overflow: hidden;
-                        box-shadow: var(--shadow-l1);
-                        background: rgba(128,128,128,0.05);">
-                <img src="{{ .image }}" alt="{{ .title }}" 
-                     style="width: 100%; height: 100%; object-fit: contain; display: block;">
-            </div>
-            {{ end }}
-
-            <div style="flex: 1; min-width: 0;">
-                <div style="display: inline-block; font-size: 0.85em; 
-                            background: var(--accent-color); color: #fff; 
-                            padding: 0.2rem 0.7rem; border-radius: 4px;
-                            margin-bottom: 0.5rem; font-weight: bold;">
-                    {{ .venue }}
-                </div>
-                <h3 style="font-size: 1.3em; margin: 0.4rem 0; line-height: 1.4;">
-                    {{ .title }}
-                </h3>
-                <p style="opacity: 0.7; margin: 0.3rem 0;">
-                    {{ .authors | safeHTML }}
-                </p>
-                <div style="display: flex; gap: 1.5rem; margin-top: 0.8rem;">
-                    {{ range .links }}
-                    <a href="{{ .url }}" target="_blank" rel="noopener"
-                       style="color: var(--accent-color); text-decoration: none; font-weight: bold;">
-                        {{ .label }} ↗
-                    </a>
+        <section class="profile-section" aria-labelledby="publications-title">
+            <h2 id="publications-title">Publications</h2>
+            <div class="publication-list">
+                {{ range $profile.publications }}
+                <article class="publication-item">
+                    {{ if .image }}
+                    <figure class="publication-image{{ with .imageMode }} publication-image--{{ . }}{{ end }}">
+                        <a href="{{ .image | relURL }}" target="_blank" rel="noopener" aria-label="Open full image for {{ .title }}">
+                            <img src="{{ .image | relURL }}" alt="Preview of {{ .title }}" loading="lazy" decoding="async">
+                        </a>
+                    </figure>
                     {{ end }}
-                </div>
+
+                    <div class="publication-details">
+                        <span class="publication-venue">{{ .venue }}</span>
+                        <h3>{{ .title }}</h3>
+                        <p class="publication-authors">{{ .authors | safeHTML }}</p>
+                        <nav class="publication-links" aria-label="Links for {{ .title }}">
+                            {{ range .links }}
+                            <a href="{{ .url }}" target="_blank" rel="noopener">{{ .label }} <span aria-hidden="true">↗</span></a>
+                            {{ end }}
+                        </nav>
+                    </div>
+                </article>
+                {{ end }}
             </div>
-        </div>
-        {{ end }}
+        </section>
     </section>
 </article>
 
 {{- partial "footer/footer" . -}}
-
 {{ end }}

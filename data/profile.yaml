@@ -33,8 +33,9 @@ news:
 publications:
   - venue: "ICMR 2026"
     title: "VideoAgent: Personalized Synthesis of Scientific Videos"
-    authors: "Xiao Liang<sup>†</sup>, Bangxin Li<sup>†</sup>, <span style='font-weight: 700; color: var(--accent-color); font-size: 1.1em;'>Zixuan Chen</span>, Hanyue Zheng, Zhi Ma, Di Wang, Cong Tian, Quan Wang"
-    image: "https://github.com/user-attachments/assets/356aa64f-c557-452b-9459-e77b4fafeed7"
+    authors: "Xiao Liang<sup>†</sup>, Bangxin Li<sup>†</sup>, <strong class='profile-author'>Zixuan Chen</strong>, Hanyue Zheng, Zhi Ma, Di Wang, Cong Tian, Quan Wang"
+    image: "/images/publications/videoagent.png"
+    imageMode: "wide"
     links:
       - label: "Paper"
         url: "https://arxiv.org/abs/2509.11253"

@@ -8,14 +8,13 @@
 {{- end -}}
 {{- $categories = uniq $categories | sort -}}
 {{- $pagesByYear := $pages.GroupByPublishDate "2006" -}}
-{{- $pagesByCat := $pages.GroupByParam "categories" -}}
 
 {{- $catColors := dict
-    "Machine Learning" "#d4818e"
-    "Computer Networks" "#6784b1"
-    "AI Introduction" "#6fb3a0"
-    "Mathematical Logic" "#c7955e"
-    "Notes" "#a08fc9"
+    "Machine Learning" "#c76f80"
+    "Computer Networks" "#5f7fae"
+    "AI Introduction" "#5fa58f"
+    "Mathematical Logic" "#b9894f"
+    "Notes" "#927fb7"
 -}}
 {{- $catIcons := dict
     "Machine Learning" "🤖"
@@ -27,91 +26,116 @@
 
 <header class="page-header">
     <h1>{{ .Title }}</h1>
-    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">≡</button>
+    <button class="sidebar-toggle" id="sidebarToggle" type="button" aria-label="Toggle sidebar" aria-expanded="false">≡</button>
 </header>
 
-<div class="archives">
-    <!-- 分类卡片 -->
-    <h2 style="font-size:2rem;margin-bottom:1.2rem;opacity:0.8;">📂 Categories</h2>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1.2rem;margin-bottom:3rem;">
-        {{ range $categories }}
-        {{- $cat := . -}}{{- $color := index $catColors $cat | default "var(--accent-color)" -}}{{- $icon := index $catIcons $cat | default "📂" -}}
-        {{- $count := len (where $pages "Params.categories" "intersect" (slice $cat)) -}}
-        <a href="/categories/{{ $cat | urlize }}/" style="display:block;padding:1.5rem 1.2rem;background:var(--card-background);border-radius:var(--card-border-radius);box-shadow:var(--shadow-l1);text-decoration:none;color:var(--body-text-color);border-left:5px solid {{ $color }};transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform=''">
-            <div style="font-size:2rem;margin-bottom:0.3rem;">{{ $icon }}</div>
-            <h3 style="font-size:1.6rem;margin:0 0 0.2rem 0;color:{{ $color }};">{{ $cat }}</h3>
-            <div style="font-size:1.2rem;opacity:0.6;">{{ $count }} notes</div>
-        </a>
-        {{ end }}
-    </div>
-
-    <!-- 全部笔记 + 排序切换 -->
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;">
-        <h2 style="font-size:2rem;opacity:0.8;margin:0;">📋 All Notes</h2>
-        <div style="display:flex;gap:0.5rem;">
-            <button id="sortTime" style="background:var(--accent-color);color:#fff;border:none;border-radius:8px;padding:0.5rem 1.2rem;font-size:1.2rem;cursor:pointer;font-weight:bold;opacity:1;" onclick="setSort('time')">By Date</button>
-            <button id="sortCat" style="background:var(--accent-color);color:#fff;border:none;border-radius:8px;padding:0.5rem 1.2rem;font-size:1.2rem;cursor:pointer;font-weight:bold;opacity:0.5;" onclick="setSort('cat')">By Category</button>
+<div class="archives-page">
+    <section class="archive-section" aria-labelledby="categories-title">
+        <h2 id="categories-title">Categories</h2>
+        <div class="category-grid">
+            {{ range $categories }}
+            {{- $cat := . -}}
+            {{- $color := index $catColors $cat | default "var(--accent-color)" -}}
+            {{- $icon := index $catIcons $cat | default "📂" -}}
+            {{- $count := len (where $pages "Params.categories" "intersect" (slice $cat)) -}}
+            <a class="category-card" href="{{ printf "/categories/%s/" ($cat | urlize) | relURL }}" style="--category-color: {{ $color }};">
+                <span class="category-icon" aria-hidden="true">{{ $icon }}</span>
+                <span class="category-name">{{ $cat }}</span>
+                <span class="category-count">{{ $count }} {{ if eq $count 1 }}note{{ else }}notes{{ end }}</span>
+            </a>
+            {{ end }}
         </div>
-    </div>
+    </section>
 
-    <!-- 按时间排序 -->
-    <div id="viewTime">
-    {{ range $pagesByYear }}
-    <div style="margin-bottom:2rem;">
-        <h3 style="font-size:2.2rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--accent-color);">{{ .Key }}</h3>
-        {{ range .Pages }}
-        {{- $cat := index .Params.categories 0 | default "" -}}{{- $color := index $catColors $cat | default "var(--accent-color)" -}}
-        <div style="padding:1rem 1.2rem;margin-bottom:0.8rem;background:var(--card-background);border-radius:var(--card-border-radius);box-shadow:var(--shadow-l1);border-left:4px solid {{ $color }};">
-            <h4 style="font-size:1.8rem;margin:0 0 0.3rem 0;"><a href="{{ .RelPermalink }}" style="color:var(--body-text-color);text-decoration:none;">{{ .Title }}</a></h4>
-            <div style="display:flex;align-items:center;gap:1rem;font-size:1.4rem;">
-                <time style="opacity:0.6;">{{ .PublishDate.Format "2006-01-02" }}</time>
-                {{ if $cat }}<span style="display:inline-block;background:{{ $color }};color:#fff;padding:0.2rem 0.8rem;border-radius:4px;font-size:1.1rem;font-weight:bold;">{{ $cat }}</span>{{ end }}
+    <section class="archive-section" aria-labelledby="notes-title">
+        <div class="archive-toolbar">
+            <h2 id="notes-title">All Notes</h2>
+            <div class="archive-sort" role="group" aria-label="Sort notes">
+                <button id="sortTime" type="button" data-sort="time" aria-pressed="true">By Date</button>
+                <button id="sortCat" type="button" data-sort="cat" aria-pressed="false">By Category</button>
             </div>
         </div>
-        {{ end }}
-    </div>
-    {{ end }}
-    </div>
 
-    <!-- 按分类排序 -->
-    <div id="viewCat" style="display:none;">
-    {{ range $categories }}
-    {{- $cat := . -}}{{- $color := index $catColors $cat | default "var(--accent-color)" -}}
-    {{- $catPages := where $pages "Params.categories" "intersect" (slice $cat) -}}
-    <div style="margin-bottom:2rem;">
-        <h3 style="font-size:2.2rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid {{ $color }};color:{{ $color }};">{{ $cat }}</h3>
-        {{ range $catPages }}
-        <div style="padding:1rem 1.2rem;margin-bottom:0.8rem;background:var(--card-background);border-radius:var(--card-border-radius);box-shadow:var(--shadow-l1);border-left:4px solid {{ $color }};">
-            <h4 style="font-size:1.8rem;margin:0 0 0.3rem 0;"><a href="{{ .RelPermalink }}" style="color:var(--body-text-color);text-decoration:none;">{{ .Title }}</a></h4>
-            <div style="display:flex;align-items:center;gap:1rem;font-size:1.4rem;">
-                <time style="opacity:0.6;">{{ .PublishDate.Format "2006-01-02" }}</time>
-                {{ if $cat }}<span style="display:inline-block;background:{{ $color }};color:#fff;padding:0.2rem 0.8rem;border-radius:4px;font-size:1.1rem;font-weight:bold;">{{ $cat }}</span>{{ end }}
-            </div>
+        <div id="viewTime" class="archive-view">
+            {{ range $pagesByYear }}
+            <section class="archive-group">
+                <h3>{{ .Key }}</h3>
+                <div class="archive-entry-list">
+                    {{ range .Pages }}
+                    {{- $cat := index .Params.categories 0 | default "" -}}
+                    {{- $color := index $catColors $cat | default "var(--accent-color)" -}}
+                    <article class="archive-entry" style="--category-color: {{ $color }};">
+                        <h4><a href="{{ .RelPermalink }}">{{ .Title }}</a></h4>
+                        <div class="archive-meta">
+                            <time datetime="{{ .PublishDate.Format "2006-01-02" }}">{{ .PublishDate.Format "2006-01-02" }}</time>
+                            {{ if $cat }}<span class="archive-category">{{ $cat }}</span>{{ end }}
+                        </div>
+                    </article>
+                    {{ end }}
+                </div>
+            </section>
+            {{ end }}
         </div>
-        {{ end }}
-    </div>
-    {{ end }}
-    </div>
+
+        <div id="viewCat" class="archive-view" hidden>
+            {{ range $categories }}
+            {{- $cat := . -}}
+            {{- $color := index $catColors $cat | default "var(--accent-color)" -}}
+            {{- $catPages := where $pages "Params.categories" "intersect" (slice $cat) -}}
+            <section class="archive-group category-group" style="--category-color: {{ $color }};">
+                <h3>{{ $cat }}</h3>
+                <div class="archive-entry-list">
+                    {{ range $catPages }}
+                    <article class="archive-entry">
+                        <h4><a href="{{ .RelPermalink }}">{{ .Title }}</a></h4>
+                        <div class="archive-meta">
+                            <time datetime="{{ .PublishDate.Format "2006-01-02" }}">{{ .PublishDate.Format "2006-01-02" }}</time>
+                            <span class="archive-category">{{ $cat }}</span>
+                        </div>
+                    </article>
+                    {{ end }}
+                </div>
+            </section>
+            {{ end }}
+        </div>
+    </section>
 </div>
 
 {{- partial "footer/footer" . -}}
 
 <script>
-function setSort(type) {
-    document.getElementById('viewTime').style.display = type === 'time' ? '' : 'none';
-    document.getElementById('viewCat').style.display = type === 'cat' ? '' : 'none';
-    document.getElementById('sortTime').style.opacity = type === 'time' ? '1' : '0.5';
-    document.getElementById('sortCat').style.opacity = type === 'cat' ? '1' : '0.5';
-}
 (function() {
-    setSort('time');
-    document.getElementById('sidebarToggle').addEventListener('click', function() {
-        var s = document.querySelector('.right-sidebar');
-        if (s) s.classList.toggle('sidebar-visible');
+    var timeView = document.getElementById('viewTime');
+    var categoryView = document.getElementById('viewCat');
+    var sortButtons = document.querySelectorAll('.archive-sort button');
+
+    function setSort(type) {
+        var showTime = type === 'time';
+        timeView.hidden = !showTime;
+        categoryView.hidden = showTime;
+        sortButtons.forEach(function(button) {
+            button.setAttribute('aria-pressed', String(button.dataset.sort === type));
+        });
+        try { localStorage.setItem('archive-sort', type); } catch (error) {}
+    }
+
+    sortButtons.forEach(function(button) {
+        button.addEventListener('click', function() { setSort(button.dataset.sort); });
+    });
+
+    var initialSort = 'time';
+    try { initialSort = localStorage.getItem('archive-sort') || 'time'; } catch (error) {}
+    setSort(initialSort === 'cat' ? 'cat' : 'time');
+
+    var sidebarButton = document.getElementById('sidebarToggle');
+    sidebarButton.addEventListener('click', function() {
+        var sidebar = document.querySelector('.right-sidebar');
+        if (!sidebar) return;
+        var visible = sidebar.classList.toggle('sidebar-visible');
+        sidebarButton.setAttribute('aria-expanded', String(visible));
     });
 })();
 </script>
-
 {{ end }}
 
 {{ define "right-sidebar" }}
