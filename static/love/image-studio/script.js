@@ -6,6 +6,8 @@ const state = {
     sourceFile: null,
     sourcePreviewUrl: null,
     resultUrl: null,
+    resultPreviewUrl: null,
+    resultMimeType: "image/png",
     isProcessing: false
 };
 
@@ -96,9 +98,64 @@ function setSourceImage(file) {
     updateRunButton();
 }
 
-function displayResult(url) {
-    state.resultUrl = url;
-    resultImage.src = url;
+function releaseResultPreview() {
+    if (state.resultPreviewUrl?.startsWith("blob:")) {
+        URL.revokeObjectURL(state.resultPreviewUrl);
+    }
+    state.resultPreviewUrl = null;
+}
+
+function getFileExtension(mimeType) {
+    const extension = mimeType?.split("/")[1]?.toLowerCase();
+    return extension === "jpeg" ? "jpg" : extension || "png";
+}
+
+function createBlobResult(base64Image, fallbackMimeType = "image/png") {
+    const embeddedDataUrl = /^data:(image\/[^;,]+);base64,([\s\S]+)$/i.exec(base64Image.trim());
+    const mimeType = embeddedDataUrl?.[1] || fallbackMimeType;
+    const encodedImage = (embeddedDataUrl?.[2] || base64Image).replace(/\s/g, "");
+    const binaryImage = atob(encodedImage);
+    const bytes = new Uint8Array(binaryImage.length);
+
+    for (let index = 0; index < binaryImage.length; index += 1) {
+        bytes[index] = binaryImage.charCodeAt(index);
+    }
+
+    const objectUrl = URL.createObjectURL(new Blob([bytes], { type: mimeType }));
+    return { downloadUrl: objectUrl, mimeType, previewUrl: objectUrl };
+}
+
+async function resolveImageResult(image) {
+    const mimeType = image?.mime_type || image?.content_type || "image/png";
+
+    if (image?.b64_json) return createBlobResult(image.b64_json, mimeType);
+
+    if (image?.url) {
+        try {
+            const response = await fetch(image.url);
+            if (!response.ok) throw new Error("Unable to fetch image preview.");
+
+            const blob = await response.blob();
+            const objectUrl = URL.createObjectURL(blob);
+            return {
+                downloadUrl: objectUrl,
+                mimeType: blob.type || mimeType,
+                previewUrl: objectUrl
+            };
+        } catch {
+            return { downloadUrl: image.url, mimeType, previewUrl: image.url };
+        }
+    }
+
+    throw new Error("服务没有返回可显示的图片。");
+}
+
+function displayResult(result) {
+    clearResult();
+    state.resultUrl = result.downloadUrl;
+    state.resultPreviewUrl = result.previewUrl;
+    state.resultMimeType = result.mimeType;
+    resultImage.src = result.previewUrl;
     resultImage.hidden = false;
     emptyResult.hidden = true;
     loadingResult.hidden = true;
@@ -108,7 +165,9 @@ function displayResult(url) {
 }
 
 function clearResult() {
+    releaseResultPreview();
     state.resultUrl = null;
+    state.resultMimeType = "image/png";
     resultImage.removeAttribute("src");
     resultImage.hidden = true;
     emptyResult.hidden = false;
@@ -171,10 +230,7 @@ async function requestImage(apiKey, prompt) {
     if (!response.ok) throw new Error(await readError(response, apiKey));
 
     const payload = await response.json();
-    const image = payload?.data?.[0];
-    if (image?.b64_json) return `data:image/png;base64,${image.b64_json}`;
-    if (image?.url) return image.url;
-    throw new Error("服务没有返回可显示的图片。");
+    return resolveImageResult(payload?.data?.[0]);
 }
 
 modeButtons.forEach((button) => {
@@ -204,8 +260,8 @@ runButton.addEventListener("click", async () => {
     showLoading();
 
     try {
-        const resultUrl = await requestImage(apiKey, prompt);
-        displayResult(resultUrl);
+        const result = await requestImage(apiKey, prompt);
+        displayResult(result);
         setStatus("画好了。", "success");
     } catch (error) {
         clearResult();
@@ -223,10 +279,11 @@ downloadButton.addEventListener("click", () => {
     if (!state.resultUrl) return;
     const link = document.createElement("a");
     link.href = state.resultUrl;
-    link.download = `xin-image-${Date.now()}.png`;
+    link.download = `xin-image-${Date.now()}.${getFileExtension(state.resultMimeType)}`;
     document.body.appendChild(link);
     link.click();
     link.remove();
 });
 
 setMode("edit");
+window.addEventListener("beforeunload", releaseResultPreview);
