@@ -130,7 +130,8 @@ h1 {
 
 .key-input-wrap input,
 textarea,
-.size-select {
+.size-select,
+.size-input {
     width: 100%;
     border: 1px solid var(--line);
     border-radius: 14px;
@@ -151,17 +152,27 @@ textarea {
     resize: vertical;
 }
 
-.size-select {
+.size-select,
+.size-input {
     min-height: 4.6rem;
     padding: 1rem 1.3rem;
 }
 
 .key-input-wrap input:focus,
 textarea:focus,
-.size-select:focus {
+.size-select:focus,
+.size-input:focus {
     border-color: var(--rose);
     box-shadow: 0 0 0 3px rgba(233, 108, 152, 0.12);
 }
+
+.custom-size-fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.8rem;
+}
+
+.custom-size-fields .field { gap: 0.5rem; }
 
 .key-visibility {
     position: absolute;

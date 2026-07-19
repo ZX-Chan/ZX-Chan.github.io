@@ -3,6 +3,8 @@ const MAX_FILE_SIZE = 20 * 1024 * 1024;
 
 const state = {
     mode: "edit",
+    editSize: "",
+    generateSize: "1024x1024",
     sourceFile: null,
     sourcePreviewUrl: null,
     resultUrl: null,
@@ -15,6 +17,10 @@ const apiKeyInput = document.getElementById("apiKey");
 const toggleKeyButton = document.getElementById("toggleKey");
 const promptInput = document.getElementById("prompt");
 const imageSizeSelect = document.getElementById("imageSize");
+const keepOriginalSizeOption = document.getElementById("keepOriginalSize");
+const customSizeFields = document.getElementById("customSizeFields");
+const customWidthInput = document.getElementById("customWidth");
+const customHeightInput = document.getElementById("customHeight");
 const promptLabel = document.getElementById("promptLabel");
 const imagePicker = document.getElementById("imagePicker");
 const sourceImageTrigger = document.getElementById("sourceImageTrigger");
@@ -48,6 +54,9 @@ function setMode(mode) {
 
     imagePicker.hidden = !isEdit;
     sourceImageTrigger.hidden = !isEdit || Boolean(state.sourceFile);
+    keepOriginalSizeOption.hidden = !isEdit;
+    imageSizeSelect.value = isEdit ? state.editSize : state.generateSize;
+    updateSizeControls();
     promptLabel.textContent = isEdit ? "想怎么改？" : "想生成什么？";
     promptInput.placeholder = isEdit
         ? "例如：把衣服改成红色夹克，其他保持不变"
@@ -61,7 +70,37 @@ function updateRunButton() {
     const hasKey = Boolean(apiKeyInput.value.trim());
     const hasPrompt = Boolean(promptInput.value.trim());
     const hasSource = state.mode !== "edit" || Boolean(state.sourceFile);
-    runButton.disabled = state.isProcessing || !hasKey || !hasPrompt || !hasSource;
+    runButton.disabled = state.isProcessing || !hasKey || !hasPrompt || !hasSource || !hasValidImageSize();
+}
+
+function updateSizeControls() {
+    customSizeFields.hidden = imageSizeSelect.value !== "custom";
+}
+
+function getRequestedImageSize() {
+    const selectedSize = imageSizeSelect.value;
+
+    if (state.mode === "edit" && !selectedSize) return null;
+    if (selectedSize !== "custom") return selectedSize;
+
+    const width = Number(customWidthInput.value);
+    const height = Number(customHeightInput.value);
+    const hasValidDimension = (dimension) => Number.isInteger(dimension) && dimension >= 256 && dimension <= 2048;
+
+    if (!hasValidDimension(width) || !hasValidDimension(height)) {
+        throw new Error("自定义宽高需要是 256 到 2048 之间的整数。");
+    }
+
+    return `${width}x${height}`;
+}
+
+function hasValidImageSize() {
+    try {
+        getRequestedImageSize();
+        return true;
+    } catch {
+        return false;
+    }
 }
 
 function clearSourceImage() {
@@ -197,15 +236,14 @@ async function readError(response, apiKey) {
     return `请求失败（${response.status}）。`;
 }
 
-async function requestImage(apiKey, prompt) {
-    const size = imageSizeSelect.value;
+async function requestImage(apiKey, prompt, size) {
     let response;
 
     if (state.mode === "edit") {
         const formData = new FormData();
         formData.append("model", "gpt-image-2");
         formData.append("prompt", prompt);
-        formData.append("size", size);
+        if (size) formData.append("size", size);
         formData.append("image", state.sourceFile, state.sourceFile.name);
         response = await fetch(`${API_BASE_URL}/edits`, {
             method: "POST",
@@ -237,6 +275,19 @@ modeButtons.forEach((button) => {
     button.addEventListener("click", () => setMode(button.dataset.mode));
 });
 
+imageSizeSelect.addEventListener("change", () => {
+    if (state.mode === "edit") {
+        state.editSize = imageSizeSelect.value;
+    } else {
+        state.generateSize = imageSizeSelect.value;
+    }
+    updateSizeControls();
+    updateRunButton();
+});
+
+customWidthInput.addEventListener("input", updateRunButton);
+customHeightInput.addEventListener("input", updateRunButton);
+
 toggleKeyButton.addEventListener("click", () => {
     const isHidden = apiKeyInput.type === "password";
     apiKeyInput.type = isHidden ? "text" : "password";
@@ -254,13 +305,21 @@ runButton.addEventListener("click", async () => {
     const prompt = promptInput.value.trim();
     if (!apiKey || !prompt || (state.mode === "edit" && !state.sourceFile)) return;
 
+    let size;
+    try {
+        size = getRequestedImageSize();
+    } catch (error) {
+        setStatus(error.message, "error");
+        return;
+    }
+
     state.isProcessing = true;
     updateRunButton();
     setStatus();
     showLoading();
 
     try {
-        const result = await requestImage(apiKey, prompt);
+        const result = await requestImage(apiKey, prompt, size);
         displayResult(result);
         setStatus("画好了。", "success");
     } catch (error) {

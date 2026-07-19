@@ -40,12 +40,25 @@
                     <label class="field" for="imageSize">
                         <span class="field-label">图片尺寸</span>
                         <select class="size-select" id="imageSize">
-                            <option value="1024x1024" selected>方形 1024 x 1024</option>
+                            <option id="keepOriginalSize" value="">保持原图尺寸</option>
+                            <option value="1024x1024">方形 1024 x 1024</option>
                             <option value="1536x1024">横图 1536 x 1024</option>
                             <option value="1024x1536">竖图 1024 x 1536</option>
                             <option value="2048x2048">2K 方形 2048 x 2048</option>
+                            <option value="custom">自定义尺寸</option>
                         </select>
                     </label>
+
+                    <div class="custom-size-fields" id="customSizeFields" hidden>
+                        <label class="field" for="customWidth">
+                            <span class="field-label">宽度</span>
+                            <input class="size-input" id="customWidth" type="number" inputmode="numeric" min="256" max="2048" step="1" value="1024">
+                        </label>
+                        <label class="field" for="customHeight">
+                            <span class="field-label">高度</span>
+                            <input class="size-input" id="customHeight" type="number" inputmode="numeric" min="256" max="2048" step="1" value="1024">
+                        </label>
+                    </div>
 
                     <section class="image-picker" id="imagePicker" aria-labelledby="sourceImageLabel">
                         <span class="field-label" id="sourceImageLabel">原图</span>
